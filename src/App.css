@@ -2038,6 +2038,24 @@ a.footer__legal-link:hover::after {
   border-color: var(--color-text);
 }
 
+.minimal-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #666;
+  border-color: #666;
+}
+
+.contact-form-error {
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  background: #fff0f0;
+  border: 1px solid #ffcdd2;
+  border-radius: 6px;
+  color: #c62828;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
 .contact-form-success {
   padding: 2.5rem;
   background: white;
