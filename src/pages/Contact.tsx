@@ -25,15 +25,40 @@ export default function Contact() {
   const hiddenFormRef = useRef<HTMLFormElement>(null)
   const iframeSubmittedRef = useRef(false)
 
+  const getSerializedData = () => {
+    const dataParams = new URLSearchParams()
+    dataParams.append('names[first_name]', firstName)
+    dataParams.append('names[last_name]', lastName)
+    dataParams.append('first_name', firstName)
+    dataParams.append('last_name', lastName)
+    dataParams.append('firstname', firstName)
+    dataParams.append('lastname', lastName)
+    dataParams.append('email', email)
+    dataParams.append('input_email', email)
+    dataParams.append('email_address', email)
+    dataParams.append('phone', phone)
+    dataParams.append('mobile', phone)
+    dataParams.append('mobile_number', phone)
+    dataParams.append('phone_mobile', phone)
+    dataParams.append('numeric-1', phone)
+    dataParams.append('message', message)
+    dataParams.append('description', message)
+    dataParams.append('textarea', message)
+    return dataParams.toString()
+  }
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setSubmitting(true)
     setErrorMessage('')
 
+    const serializedData = getSerializedData()
+
     try {
       const payload = new URLSearchParams()
       payload.append('action', 'fluentform_submit')
       payload.append('form_id', '3')
+      payload.append('data', serializedData)
       payload.append('names[first_name]', firstName)
       payload.append('names[last_name]', lastName)
       payload.append('first_name', firstName)
@@ -281,16 +306,24 @@ export default function Contact() {
       >
         <input type="hidden" name="action" value="fluentform_submit" />
         <input type="hidden" name="form_id" value="3" />
+        <input type="hidden" name="data" value={getSerializedData()} />
         <input type="hidden" name="names[first_name]" value={firstName} />
         <input type="hidden" name="names[last_name]" value={lastName} />
         <input type="hidden" name="first_name" value={firstName} />
         <input type="hidden" name="last_name" value={lastName} />
+        <input type="hidden" name="firstname" value={firstName} />
+        <input type="hidden" name="lastname" value={lastName} />
         <input type="hidden" name="email" value={email} />
+        <input type="hidden" name="input_email" value={email} />
+        <input type="hidden" name="email_address" value={email} />
         <input type="hidden" name="phone" value={phone} />
         <input type="hidden" name="mobile" value={phone} />
+        <input type="hidden" name="mobile_number" value={phone} />
         <input type="hidden" name="phone_mobile" value={phone} />
         <input type="hidden" name="numeric-1" value={phone} />
         <input type="hidden" name="message" value={message} />
+        <input type="hidden" name="description" value={message} />
+        <input type="hidden" name="textarea" value={message} />
       </form>
     </main>
   )
