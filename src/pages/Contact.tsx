@@ -48,40 +48,64 @@ export default function Contact() {
   }
 
   const validatePhone = (val: string): boolean => {
-    const digitsOnly = val.replace(/[\s\-\(\)\+]/g, '')
-    if (!/^\d{8,15}$/.test(digitsOnly)) {
-      return false
-    }
-    if (digitsOnly.startsWith('04') && digitsOnly.length !== 10) {
-      return false
-    }
-    return true
+    const digitsOnly = val.replace(/\D/g, '')
+    return digitsOnly.length >= 6
   }
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (submitting) return
 
     setSubmitting(true)
     setErrorMessage('')
 
-    if (!validatePhone(phone)) {
-      setErrorMessage('Please enter a valid phone number (e.g. 0418 542 638 or +61 418 542 638).')
+    if (phone && !validatePhone(phone)) {
+      setErrorMessage('Please enter a valid phone number.')
       setSubmitting(false)
       return
     }
 
-    if (hiddenFormRef.current) {
-      iframeSubmittedRef.current = true
-      hiddenFormRef.current.submit()
-      setTimeout(() => {
-        setSubmitted(true)
-        setSubmitting(false)
-      }, 1000)
-    } else {
-      setSubmitted(true)
-      setSubmitting(false)
+    const serializedData = getSerializedData()
+
+    try {
+      const payload = new URLSearchParams()
+      payload.append('action', 'fluentform_submit')
+      payload.append('form_id', '3')
+      payload.append('data', serializedData)
+      payload.append('names[first_name]', firstName)
+      payload.append('names[last_name]', lastName)
+      payload.append('first_name', firstName)
+      payload.append('last_name', lastName)
+      payload.append('email', email)
+      payload.append('phone', phone)
+      payload.append('mobile', phone)
+      payload.append('phone_mobile', phone)
+      payload.append('numeric-1', phone)
+      payload.append('message', message)
+
+      await fetch('https://api.theblacklanternclinic.com/wp-admin/admin-ajax.php', {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        },
+        body: payload.toString(),
+      })
+    } catch (err) {
+      console.warn('Fetch submission notice:', err)
     }
+
+    if (hiddenFormRef.current) {
+      try {
+        iframeSubmittedRef.current = true
+        HTMLFormElement.prototype.submit.call(hiddenFormRef.current)
+      } catch (err) {
+        console.warn('Form submit notice:', err)
+      }
+    }
+
+    setSubmitted(true)
+    setSubmitting(false)
   }
 
   return (
