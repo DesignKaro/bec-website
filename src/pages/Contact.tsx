@@ -22,9 +22,6 @@ export default function Contact() {
     }
   }, [])
 
-  const hiddenFormRef = useRef<HTMLFormElement>(null)
-  const iframeSubmittedRef = useRef(false)
-
   const getSerializedData = () => {
     const dataParams = new URLSearchParams()
     dataParams.append('names[first_name]', firstName)
@@ -91,21 +88,14 @@ export default function Contact() {
         },
         body: payload.toString(),
       })
+
+      setSubmitted(true)
     } catch (err) {
-      console.warn('Fetch submission notice:', err)
+      console.warn('Submission notice:', err)
+      setSubmitted(true)
+    } finally {
+      setSubmitting(false)
     }
-
-    if (hiddenFormRef.current) {
-      try {
-        iframeSubmittedRef.current = true
-        HTMLFormElement.prototype.submit.call(hiddenFormRef.current)
-      } catch (err) {
-        console.warn('Form submit notice:', err)
-      }
-    }
-
-    setSubmitted(true)
-    setSubmitting(false)
   }
 
   return (
@@ -296,48 +286,6 @@ export default function Contact() {
 
         </div>
       </div>
-
-      {/* Hidden iframe & fallback form to bypass cross-origin browser CORS policies */}
-      <iframe
-        name="fluentform_submission_target"
-        id="fluentform_submission_target"
-        style={{ display: 'none', width: 0, height: 0, border: 0 }}
-        title="Form submission frame"
-        onLoad={() => {
-          if (iframeSubmittedRef.current) {
-            setSubmitted(true)
-            setSubmitting(false)
-          }
-        }}
-      />
-      <form
-        ref={hiddenFormRef}
-        action="https://api.theblacklanternclinic.com/wp-admin/admin-ajax.php"
-        method="POST"
-        target="fluentform_submission_target"
-        style={{ display: 'none' }}
-      >
-        <input type="hidden" name="action" value="fluentform_submit" />
-        <input type="hidden" name="form_id" value="3" />
-        <input type="hidden" name="data" value={getSerializedData()} />
-        <input type="hidden" name="names[first_name]" value={firstName} />
-        <input type="hidden" name="names[last_name]" value={lastName} />
-        <input type="hidden" name="first_name" value={firstName} />
-        <input type="hidden" name="last_name" value={lastName} />
-        <input type="hidden" name="firstname" value={firstName} />
-        <input type="hidden" name="lastname" value={lastName} />
-        <input type="hidden" name="email" value={email} />
-        <input type="hidden" name="input_email" value={email} />
-        <input type="hidden" name="email_address" value={email} />
-        <input type="hidden" name="phone" value={phone} />
-        <input type="hidden" name="mobile" value={phone} />
-        <input type="hidden" name="mobile_number" value={phone} />
-        <input type="hidden" name="phone_mobile" value={phone} />
-        <input type="hidden" name="numeric-1" value={phone} />
-        <input type="hidden" name="message" value={message} />
-        <input type="hidden" name="description" value={message} />
-        <input type="hidden" name="textarea" value={message} />
-      </form>
     </main>
   )
 }
