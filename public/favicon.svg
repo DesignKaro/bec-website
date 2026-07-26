@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <!-- Top Loop/Ring -->
+  <circle cx="256" cy="80" r="45" stroke="#1C1F2A" stroke-width="18" fill="none" />
+  
+  <!-- Chimney/Cap Top -->
+  <rect x="236" y="125" width="40" height="30" fill="#1C1F2A" rx="4" />
+  
+  <!-- Main Sloped Roof/Cap -->
+  <path d="M112 210 L400 210 L340 150 L172 150 Z" fill="#1C1F2A" />
+  
+  <!-- Base Plate -->
+  <rect x="130" y="420" width="252" height="30" rx="6" fill="#1C1F2A" />
+  
+  <!-- Bottom Stand Rim -->
+  <rect x="166" y="450" width="180" height="15" rx="3" fill="#1C1F2A" />
+  
+  <!-- Glass/Flame Background (Soft Warm Glow) -->
+  <path d="M150 210 L362 210 L340 420 L172 420 Z" fill="rgba(240, 235, 225, 0.5)" />
+  
+  <!-- Glowing Flame (Gold/Amber) -->
+  <!-- Outer Flame -->
+  <path d="M256 390 C206 390 196 320 256 230 C316 320 306 390 256 390 Z" fill="#B8956A" opacity="0.85" />
+  <!-- Inner Core Flame -->
+  <path d="M256 380 C226 380 220 340 256 280 C292 340 286 380 256 380 Z" fill="#F0EBE1" />
+
+  <!-- Outer Metal Frame Pillars -->
+  <!-- Left Pillar -->
+  <path d="M140 210 L160 420 L176 420 L156 210 Z" fill="#1C1F2A" />
+  <!-- Right Pillar -->
+  <path d="M372 210 L352 420 L336 420 L356 210 Z" fill="#1C1F2A" />
+  <!-- Center Arch Guards (classic lantern wires) -->
+  <path d="M200 210 Q256 240 312 210" stroke="#1C1F2A" stroke-width="12" fill="none" stroke-linecap="round" />
+  <path d="M185 300 Q256 330 327 300" stroke="#1C1F2A" stroke-width="12" fill="none" stroke-linecap="round" />
+</svg>
