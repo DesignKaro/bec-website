@@ -47,12 +47,29 @@ export default function Contact() {
     return dataParams.toString()
   }
 
+  const validatePhone = (val: string): boolean => {
+    const digitsOnly = val.replace(/[\s\-\(\)\+]/g, '')
+    if (!/^\d{8,15}$/.test(digitsOnly)) {
+      return false
+    }
+    if (digitsOnly.startsWith('04') && digitsOnly.length !== 10) {
+      return false
+    }
+    return true
+  }
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (submitting) return
 
     setSubmitting(true)
     setErrorMessage('')
+
+    if (!validatePhone(phone)) {
+      setErrorMessage('Please enter a valid phone number (e.g. 0418 542 638 or +61 418 542 638).')
+      setSubmitting(false)
+      return
+    }
 
     if (hiddenFormRef.current) {
       iframeSubmittedRef.current = true
@@ -199,9 +216,17 @@ export default function Contact() {
                     <input
                       id="contact-phone"
                       type="tel"
-                      placeholder="Phone Number"
+                      placeholder="Phone Number (e.g. 0418 542 638)"
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
+                      onChange={(e) => {
+                        setPhone(e.target.value)
+                        if (errorMessage) setErrorMessage('')
+                      }}
+                      onBlur={() => {
+                        if (phone && !validatePhone(phone)) {
+                          setErrorMessage('Please enter a valid phone number (e.g. 0418 542 638 or +61 418 542 638).')
+                        }
+                      }}
                       required
                     />
                   </div>
