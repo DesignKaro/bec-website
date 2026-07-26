@@ -47,49 +47,13 @@ export default function Contact() {
     return dataParams.toString()
   }
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    if (submitting) return
+
     setSubmitting(true)
     setErrorMessage('')
 
-    const serializedData = getSerializedData()
-
-    try {
-      const payload = new URLSearchParams()
-      payload.append('action', 'fluentform_submit')
-      payload.append('form_id', '3')
-      payload.append('data', serializedData)
-      payload.append('names[first_name]', firstName)
-      payload.append('names[last_name]', lastName)
-      payload.append('first_name', firstName)
-      payload.append('last_name', lastName)
-      payload.append('email', email)
-      payload.append('phone', phone)
-      payload.append('mobile', phone)
-      payload.append('phone_mobile', phone)
-      payload.append('numeric-1', phone)
-      payload.append('message', message)
-
-      const response = await fetch('https://api.theblacklanternclinic.com/wp-admin/admin-ajax.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        },
-        body: payload.toString(),
-      })
-
-      const data = await response.json()
-
-      if (data && data.success) {
-        setSubmitted(true)
-        setSubmitting(false)
-        return
-      }
-    } catch (err) {
-      console.warn('Fetch cross-origin request blocked by browser, executing iframe form submit fallback...', err)
-    }
-
-    // Fallback: Submit via hidden HTML form to target iframe (bypasses browser CORS policy seamlessly)
     if (hiddenFormRef.current) {
       iframeSubmittedRef.current = true
       hiddenFormRef.current.submit()
