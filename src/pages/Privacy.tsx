@@ -17,7 +17,7 @@ export default function Privacy() {
 
       <div className="legal-content">
         <p style={{ color: 'var(--color-text-muted)', fontSize: '0.82rem', marginBottom: '2rem' }}>
-          Last updated: January 2025
+          Last updated: July 2026
         </p>
 
         <h2>Introduction</h2>
@@ -44,8 +44,9 @@ export default function Privacy() {
         <h3>Sensitive Information</h3>
         <p>
           As a mental health clinic, we collect sensitive health information. This includes clinical
-          notes, assessment results, diagnosis information, and treatment records. We only collect
-          this information with your consent and where it is necessary for the provision of care.
+          notes, assessment results, diagnosis information, and treatment records. We collect this
+          information with your consent and only where it is necessary for the provision of care, or
+          where collection is required or authorised by law.
         </p>
 
         <h2>How We Use Your Information</h2>
@@ -65,7 +66,8 @@ export default function Privacy() {
           except where required or authorised by law. We may share information with:
         </p>
         <ul>
-          <li>Other treating health professionals with your consent</li>
+          <li>Other treating health professionals with your consent, or where permitted under the Privacy Act 1988 (Cth)</li>
+          <li>Child protection and child safety authorities, where we are required to report under Queensland child protection law</li>
           <li>Medicare Australia and health insurers for billing purposes</li>
           <li>Regulatory bodies where required by law</li>
           <li>Emergency services where there is serious risk to life</li>

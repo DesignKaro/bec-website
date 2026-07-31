@@ -17,7 +17,7 @@ export default function Terms() {
 
       <div className="legal-content">
         <p style={{ color: 'var(--color-text-muted)', fontSize: '0.82rem', marginBottom: '2rem' }}>
-          Last updated: January 2025
+          Last updated: July 2026
         </p>
 
         <h2>Agreement to Terms</h2>
@@ -89,7 +89,9 @@ export default function Terms() {
         <p>
           To the extent permitted by law, The Black Lantern Clinic is not liable for any loss or
           damage arising from reliance on information provided through our website, or from
-          disruptions to service outside our reasonable control.
+          disruptions to service outside our reasonable control. Nothing in these Terms excludes,
+          restricts or modifies any consumer guarantee, right or remedy you have under the Australian
+          Consumer Law or any other law that cannot lawfully be excluded.
         </p>
 
         <h2>Amendments</h2>
@@ -101,7 +103,7 @@ export default function Terms() {
 
         <h2>Governing Law</h2>
         <p>
-          These Terms are governed by and construed in accordance with the laws of Queensland, Australia, including the <em>Limitation of Actions Act 1974</em> (Qld), Blue Card system requirements under the Queensland Family and Child Commission (QFCC), and Child Safety Services frameworks. Any disputes arising in connection with these Terms or our services will be subject to the exclusive jurisdiction of the courts of Queensland.
+          These Terms are governed by the laws of Queensland, Australia. Any disputes arising in connection with these Terms or our services will be subject to the exclusive jurisdiction of the courts of Queensland.
         </p>
 
         <h2>Contact</h2>

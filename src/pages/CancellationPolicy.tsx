@@ -17,7 +17,7 @@ export default function CancellationPolicy() {
 
       <div className="legal-content">
         <p style={{ color: 'var(--color-text-muted)', fontSize: '0.82rem', marginBottom: '2rem' }}>
-          Last updated: January 2025
+          Last updated: July 2026
         </p>
 
         <h2>Our Approach to Cancellations</h2>
