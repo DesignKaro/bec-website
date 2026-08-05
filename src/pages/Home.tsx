@@ -168,8 +168,13 @@ export default function Home() {
                   </div>
                 )}
                 <h3 className="service-card__title">{s.title}</h3>
-                <Link to="/services" className="hero__pill-btn hero__pill-btn--dark hero__pill-btn--sm" id={`service-link-${s.num}`}>
-                  Learn more
+                <Link 
+                  to="/services" 
+                  className="hero__pill-btn hero__pill-btn--dark hero__pill-btn--sm" 
+                  id={`service-link-${s.num}`}
+                  aria-label={`Learn more about ${s.title}`}
+                >
+                  Learn more about {s.title}
                 </Link>
               </div>
             ))}
