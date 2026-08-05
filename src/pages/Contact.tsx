@@ -104,7 +104,7 @@ export default function Contact() {
           {/* LEFT SIDE: Info & Background Image */}
           <div className="contact-card__left">
             <img
-              src="/hero-bg.jpg"
+              src="/hero-bg.webp"
               alt="Background"
               className="contact-card__bg-img"
             />

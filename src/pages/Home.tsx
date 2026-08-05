@@ -68,7 +68,7 @@ export default function Home() {
       <section ref={heroRef} className={`hero${loaded ? ' loaded' : ''} hero--home`}>
         {/* Background Image */}
         <img
-          src="/hero-bg.jpg"
+          src="/hero-bg.webp"
           alt="Hero background"
           className="hero__bg-img"
         />
@@ -80,7 +80,7 @@ export default function Home() {
         <div className="hero__content hero__content--digitalwerk">
           <div className="hero__top-image-container">
             <img
-              src="/hero-sec-bg.png"
+              src="/hero-sec-bg.webp"
               alt="The Black Lantern Clinic"
               className="hero__top-image"
             />

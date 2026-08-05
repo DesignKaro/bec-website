@@ -11,7 +11,7 @@ export default function CancellationPolicy() {
       />
       <PageHero
         title="Cancellation Policy"
-        imageSrc="/page-hero-bg.jpg"
+        imageSrc="/page-hero-bg.webp"
         showOverlay={true}
       />
 

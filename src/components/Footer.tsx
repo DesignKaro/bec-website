@@ -10,7 +10,7 @@ export default function Footer() {
         <div className="footer__box">
           {/* Background Image */}
           <img
-            src="/footer-bg.jpg"
+            src="/footer-bg.webp"
             alt="Footer background"
             className="footer__bg-img"
           />

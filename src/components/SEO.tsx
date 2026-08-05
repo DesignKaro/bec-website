@@ -11,7 +11,7 @@ interface SEOProps {
 
 const DEFAULT_TITLE = 'The Black Lantern Clinic | Specialist Youth Psychiatry & Therapy Brisbane'
 const DEFAULT_DESC = 'Specialist youth mental health clinic in Brisbane providing psychiatric assessment and evidence-based therapy for young people aged 12 to 25.'
-const DEFAULT_IMAGE = 'https://theblacklanternclinic.com/og-image.png'
+const DEFAULT_IMAGE = 'https://theblacklanternclinic.com/og-image.webp'
 const SITE_NAME = 'The Black Lantern Clinic'
 
 export default function SEO({

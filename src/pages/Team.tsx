@@ -42,7 +42,7 @@ export default function Team() {
       />
       <PageHero
         title="The people behind the clinic"
-        imageSrc="/page-hero-bg.jpg"
+        imageSrc="/page-hero-bg.webp"
         showOverlay={true}
       />
 

@@ -7,7 +7,7 @@ interface PageHeroProps {
   showOverlay?: boolean
 }
 
-export default function PageHero({ eyebrow, title, imageSrc = '/page-hero-bg.jpg', imageAlt = 'Hero background', showOverlay = true }: PageHeroProps) {
+export default function PageHero({ eyebrow, title, imageSrc = '/page-hero-bg.webp', imageAlt = 'Hero background', showOverlay = true }: PageHeroProps) {
   return (
     <div className="page-hero">
       {/* Background Image */}

@@ -11,7 +11,7 @@ export default function Terms() {
       />
       <PageHero
         title="Terms &amp; Conditions"
-        imageSrc="/page-hero-bg.jpg"
+        imageSrc="/page-hero-bg.webp"
         showOverlay={true}
       />
 

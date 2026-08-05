@@ -47,7 +47,7 @@ export default function About() {
       />
       <PageHero
         title="Who we are"
-        imageSrc="/page-hero-bg.jpg"
+        imageSrc="/page-hero-bg.webp"
         showOverlay={true}
       />
 
