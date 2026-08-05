@@ -1,8 +1,10 @@
 import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import SEO from '../components/SEO'
+import { useSiteContent } from '../context/SiteContentContext'
 
 export default function Contact() {
+  const { general } = useSiteContent()
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
@@ -140,21 +142,21 @@ export default function Contact() {
                 <div className="contact-card__detail-block">
                   <span className="contact-card__detail-label">Email</span>
                   <p className="contact-card__detail-value">
-                    <a href="mailto:admin@theblacklanternclinic.com">
-                      admin@theblacklanternclinic.com
+                    <a href={`mailto:${general.email}`}>
+                      {general.email}
                     </a>
                   </p>
                 </div>
                 <div className="contact-card__detail-block">
                   <span className="contact-card__detail-label">Contact</span>
                   <p className="contact-card__detail-value">
-                    <a href="tel:+61418542638">0418 542 638</a>
+                    <a href={`tel:${general.phone.replace(/\s+/g, '')}`}>{general.phone}</a>
                   </p>
                 </div>
                 <div className="contact-card__detail-block contact-card__detail-block--full">
                   <span className="contact-card__detail-label">Crisis Support</span>
                   <p className="contact-card__detail-value">
-                    The Black Lantern Clinic is not a crisis clinic, if you are experiencing a mental health crisis or emergency please contact 000 or lifeline 13 11 14 or 24/7 MH Call 1300 642 255
+                    {general.crisis_text}
                   </p>
                 </div>
               </div>

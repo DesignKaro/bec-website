@@ -4,6 +4,11 @@ export interface SiteGeneral {
   phone: string
   email: string
   hours: string
+  sat_hours: string
+  location_text: string
+  instagram_url: string
+  booking_btn_text: string
+  booking_url: string
   crisis_text: string
 }
 
@@ -13,6 +18,28 @@ export interface SiteHeroes {
   home_bg: string
   subpage_bg: string
   footer_bg: string
+}
+
+export interface SiteCta {
+  title: string
+  body: string
+  btn_text: string
+}
+
+export interface SiteAbout {
+  hero_title: string
+  story_title: string
+  story_img: string
+}
+
+export interface SiteFooter {
+  brand_desc: string
+  credit: string
+}
+
+export interface SiteSeo {
+  home_title: string
+  home_desc: string
 }
 
 export interface SiteService {
@@ -33,6 +60,10 @@ export interface SiteTeamMember {
 export interface SiteContent {
   general: SiteGeneral
   heroes: SiteHeroes
+  cta: SiteCta
+  about: SiteAbout
+  footer: SiteFooter
+  seo: SiteSeo
   services: SiteService[]
   team: SiteTeamMember[]
 }
@@ -42,6 +73,11 @@ const DEFAULT_CONTENT: SiteContent = {
     phone: '0418 542 638',
     email: 'admin@theblacklanternclinic.com',
     hours: 'Mon – Fri: 9am – 5pm',
+    sat_hours: 'Sat: By appointment only',
+    location_text: 'Youth Mental Health · Brisbane, Queensland',
+    instagram_url: 'https://instagram.com',
+    booking_btn_text: 'Book an appointment',
+    booking_url: '/contact',
     crisis_text:
       'The Black Lantern Clinic is not a crisis clinic, if you are experiencing a mental health crisis or emergency please contact 000 or lifeline 13 11 14 or 24/7 MH Call 1300 642 255',
   },
@@ -52,6 +88,24 @@ const DEFAULT_CONTENT: SiteContent = {
     home_bg: '/hero-bg.webp',
     subpage_bg: '/page-hero-bg.webp',
     footer_bg: '/footer-bg.webp',
+  },
+  cta: {
+    title: 'Ready to take the first step?',
+    body: "We know reaching out can feel like a big step. Our team is here to answer your questions and help you work out if we're the right fit — no pressure, no obligation.",
+    btn_text: 'Get in Touch',
+  },
+  about: {
+    hero_title: 'Who we are',
+    story_title: '"A steady light, when the path feels uncertain."',
+    story_img: '/about_story.webp',
+  },
+  footer: {
+    brand_desc: 'Specialist psychiatric and mental health care for young people aged 12 to 25.',
+    credit: 'Youth Mental Health · Brisbane, Queensland',
+  },
+  seo: {
+    home_title: 'The Black Lantern Clinic | Specialist Youth Psychiatry & Therapy Brisbane',
+    home_desc: 'Specialist youth mental health clinic in Brisbane for ages 12–25. Grounded, person-centred psychiatric assessment & evidence-based therapy.',
   },
   services: [
     {
@@ -85,12 +139,12 @@ export const SiteContentProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const [content, setContent] = useState<SiteContent>(DEFAULT_CONTENT)
 
   useEffect(() => {
-    const wpApiUrl = import.meta.env.VITE_WP_API_URL
+    const wpApiUrl = (import.meta.env.VITE_WP_API_URL as string) || 'https://api.theblacklanternclinic.com'
     if (!wpApiUrl) return
 
-    fetch(`${wpApiUrl}/wp-json/bec/v1/site-data`)
+    fetch(`${wpApiUrl.replace(/\/$/, '')}/wp-json/bec/v1/site-data?_t=${Date.now()}`)
       .then((res) => {
-        if (!res.ok) throw new Error('Failed to fetch WordPress site data')
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`)
         return res.json()
       })
       .then((data) => {
@@ -98,13 +152,17 @@ export const SiteContentProvider: React.FC<{ children: React.ReactNode }> = ({ c
           setContent({
             general: { ...DEFAULT_CONTENT.general, ...data.general },
             heroes: { ...DEFAULT_CONTENT.heroes, ...data.heroes },
+            cta: { ...DEFAULT_CONTENT.cta, ...(data.cta || {}) },
+            about: { ...DEFAULT_CONTENT.about, ...(data.about || {}) },
+            footer: { ...DEFAULT_CONTENT.footer, ...(data.footer || {}) },
+            seo: { ...DEFAULT_CONTENT.seo, ...(data.seo || {}) },
             services: data.services && data.services.length > 0 ? data.services : DEFAULT_CONTENT.services,
             team: data.team && data.team.length > 0 ? data.team : DEFAULT_CONTENT.team,
           })
         }
       })
       .catch((err) => {
-        console.warn('WordPress fetch warning (using default site content):', err.message)
+        console.warn('WordPress API fetch warning (using default site content):', err.message)
       })
   }, [])
 

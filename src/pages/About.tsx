@@ -3,6 +3,7 @@ import PageHero from '../components/PageHero'
 import ContactCtaBanner from '../components/ContactCtaBanner'
 import RevealImg from '../components/RevealImg'
 import SEO from '../components/SEO'
+import { useSiteContent } from '../context/SiteContentContext'
 
 const VALUES = [
   {
@@ -38,6 +39,8 @@ const VALUES = [
 ]
 
 export default function About() {
+  const { about } = useSiteContent()
+
   return (
     <main>
       <SEO
@@ -46,7 +49,7 @@ export default function About() {
         canonicalUrl="https://theblacklanternclinic.com/about"
       />
       <PageHero
-        title="Who we are"
+        title={about.hero_title || "Who we are"}
         imageSrc="/page-hero-bg.webp"
         showOverlay={true}
       />
@@ -55,13 +58,13 @@ export default function About() {
       <section className="about-story">
         <div className="about-story__image">
           <div className="about-story__image-inner">
-            <RevealImg src="/about_story.webp" alt="The Black Lantern Clinic therapy room" />
+            <RevealImg src={about.story_img || "/about_story.webp"} alt="The Black Lantern Clinic therapy room" />
           </div>
         </div>
         <div className="about-story__content fade-up">
           <p className="eyebrow about-story__eyebrow">Our story</p>
           <h2 className="about-story__title">
-            "A steady light, when the path feels uncertain."
+            {about.story_title}
           </h2>
           <div className="about-story__body">
             <p>

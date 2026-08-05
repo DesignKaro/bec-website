@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { ArrowUp } from 'lucide-react'
+import { useSiteContent } from '../context/SiteContentContext'
 
 const InstagramIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'block' }}>
@@ -70,6 +71,8 @@ export default function Navbar() {
   const pageClass = location.pathname === '/' ? 'home' : location.pathname.substring(1)
 
 
+  const { general } = useSiteContent()
+
   return (
     <>
       <nav className={`navbar ${isSolid ? 'solid' : isTopLight ? 'top-light' : 'transparent'} ${isSolid && hideDock && !menuOpen ? 'dock-hidden' : ''} navbar--${pageClass}`}>
@@ -83,7 +86,7 @@ export default function Navbar() {
           </Link>
 
           <div className="navbar__right">
-            <Link to="/contact" className="navbar__book-link">Book an<br className="navbar__book-br" /> appointment</Link>
+            <Link to={general.booking_url || '/contact'} className="navbar__book-link">Book an<br className="navbar__book-br" /> appointment</Link>
             <button className="navbar__menu-btn" onClick={toggleMenu}>
               <span className="navbar__menu-btn-text">{menuOpen ? 'Close' : 'Menu'}</span>
               <WaveIcon />
@@ -114,7 +117,7 @@ export default function Navbar() {
               />
             </Link>
             <div className="navbar__right">
-              <Link to="/contact" className="navbar__book-link" onClick={() => setMenuOpen(false)}>Book an<br className="navbar__book-br" /> appointment</Link>
+              <Link to={general.booking_url || '/contact'} className="navbar__book-link" onClick={() => setMenuOpen(false)}>Book an<br className="navbar__book-br" /> appointment</Link>
               <button className="navbar__menu-btn" onClick={toggleMenu}>
                 <span className="navbar__menu-btn-text">Close</span>
                 <WaveIcon />
@@ -134,12 +137,12 @@ export default function Navbar() {
 
           <div className="menu-drawer__footer">
             <div className="menu-drawer__footer-left">
-              <a href="tel:+61418542638" className="menu-drawer__footer-item">0418 542 638</a>
-              <a href="mailto:admin@theblacklanternclinic.com" className="menu-drawer__footer-item">admin@theblacklanternclinic.com</a>
-              <span className="menu-drawer__footer-item">Brisbane, Queensland</span>
+              <a href={`tel:${general.phone.replace(/\s+/g, '')}`} className="menu-drawer__footer-item">{general.phone}</a>
+              <a href={`mailto:${general.email}`} className="menu-drawer__footer-item">{general.email}</a>
+              <span className="menu-drawer__footer-item">{general.location_text}</span>
             </div>
             <div className="menu-drawer__footer-right">
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="menu-drawer__social-link">
+              <a href={general.instagram_url || 'https://instagram.com'} target="_blank" rel="noopener noreferrer" className="menu-drawer__social-link">
                 <InstagramIcon />
               </a>
             </div>
