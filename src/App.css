@@ -1790,7 +1790,7 @@ a.footer__legal-link:hover::after {
   max-width: 1600px;
   width: 95%;
   margin: 0 auto;
-  padding: 0 0 2rem;
+  padding: calc(var(--nav-height) + 2.5rem) 0 3rem;
 }
 
 .contact-card-container {
@@ -2644,7 +2644,7 @@ a.footer__legal-link:hover::after {
     padding: calc(var(--nav-height) + 0.85rem) 0 1.5rem;
   }
   .contact-card-wrapper {
-    padding: 0 0 1.5rem;
+    padding: calc(var(--nav-height) + 1.25rem) 0 1.5rem;
   }
   .contact-card__left-content {
     padding: 0;
