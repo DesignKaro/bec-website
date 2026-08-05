@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom'
 import { AtSign, PhoneCall } from 'lucide-react'
+import { useSiteContent } from '../context/SiteContentContext'
 
 export default function Footer() {
   const year = new Date().getFullYear()
+  const { general, heroes } = useSiteContent()
 
   return (
     <footer className="footer">
@@ -10,7 +12,7 @@ export default function Footer() {
         <div className="footer__box">
           {/* Background Image */}
           <img
-            src="/footer-bg.webp"
+            src={heroes.footer_bg || '/footer-bg.webp'}
             alt="Footer background"
             className="footer__bg-img"
           />
@@ -40,16 +42,16 @@ export default function Footer() {
                   <div className="footer__icon-badge">
                     <AtSign size={14} strokeWidth={1.8} className="footer__contact-icon" />
                   </div>
-                  <a href="mailto:admin@theblacklanternclinic.com" className="footer__link">
-                    admin@theblacklanternclinic.com
+                  <a href={`mailto:${general.email}`} className="footer__link">
+                    {general.email}
                   </a>
                 </li>
                 <li>
                   <div className="footer__icon-badge">
                     <PhoneCall size={14} strokeWidth={1.8} className="footer__contact-icon" />
                   </div>
-                  <a href="tel:+61418542638" className="footer__link">
-                    0418 542 638
+                  <a href={`tel:${general.phone.replace(/\s+/g, '')}`} className="footer__link">
+                    {general.phone}
                   </a>
                 </li>
               </ul>
@@ -70,11 +72,11 @@ export default function Footer() {
             <div className="footer__hours-col">
               <span className="footer__section-title">Hours &amp; Care</span>
               <ul className="footer__hours-list">
-                <li>Mon – Fri: 9am – 5pm</li>
+                <li>{general.hours}</li>
                 <li>Sat: By appointment only</li>
                 <li className="footer__crisis-item">
                   <strong>Crisis Support</strong><br />
-                  The Black Lantern Clinic is not a crisis clinic, if you are experiencing a mental health crisis or emergency please contact 000 or lifeline 13 11 14 or 24/7 MH Call 1300 642 255
+                  {general.crisis_text}
                 </li>
               </ul>
             </div>

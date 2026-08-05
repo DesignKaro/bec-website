@@ -10,6 +10,7 @@ import Contact from './pages/Contact'
 import Privacy from './pages/Privacy'
 import Terms from './pages/Terms'
 import CancellationPolicy from './pages/CancellationPolicy'
+import { SiteContentProvider } from './context/SiteContentContext'
 import { useScrollAnimations } from './hooks/useScrollAnimations'
 import './index.css'
 import './App.css'
@@ -38,9 +39,11 @@ function AppContent() {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <AppContent />
-    </BrowserRouter>
+    <SiteContentProvider>
+      <BrowserRouter>
+        <AppContent />
+      </BrowserRouter>
+    </SiteContentProvider>
   )
 }
 

@@ -3,34 +3,10 @@ import { Link } from 'react-router-dom'
 import ContactCtaBanner from '../components/ContactCtaBanner'
 import RevealImg from '../components/RevealImg'
 import SEO from '../components/SEO'
-
-const SERVICES = [
-  {
-    num: '01',
-    title: 'Psychiatry',
-    image: '/services_psychiatry_brain.webp',
-  },
-  {
-    num: '02',
-    title: 'Therapy',
-    image: '/therapy.webp',
-  },
-]
-
-const TEAM = [
-  {
-    name: 'Dr. Joel Adams-Bedford',
-    role: 'Clinical Director & Child and Adolescent Psychiatrist',
-    photo: '/team_joel.webp',
-  },
-  {
-    name: 'Rebecca Willis',
-    role: 'Practice Director & Psychotherapist',
-    photo: '/team_rebecca.webp',
-  },
-]
+import { useSiteContent } from '../context/SiteContentContext'
 
 export default function Home() {
+  const { heroes, services, team } = useSiteContent()
   const heroRef = useRef<HTMLElement>(null)
   const [loaded, setLoaded] = useState(false)
   const [currentTime, setCurrentTime] = useState('')
@@ -68,7 +44,7 @@ export default function Home() {
       <section ref={heroRef} className={`hero${loaded ? ' loaded' : ''} hero--home`}>
         {/* Background Image */}
         <img
-          src="/hero-bg.webp"
+          src={heroes.home_bg || '/hero-bg.webp'}
           alt="Hero background"
           className="hero__bg-img"
         />
@@ -87,12 +63,11 @@ export default function Home() {
           </div>
 
           <h1 className="hero__title hero__title--digitalwerk">
-            <span className="hero__title-line">Light for the Path ahead</span>
+            <span className="hero__title-line">{heroes.home_title}</span>
           </h1>
 
           <p className="hero__subtitle--digitalwerk">
-            The Black Lantern Clinic is a private specialist youth mental health clinic in Brisbane, Queensland.
-            We see young people aged 12 to 25 — and where it helps, their families and carers too.
+            {heroes.home_subtitle}
           </p>
 
           <Link to="/contact" className="hero__pill-btn">
@@ -160,8 +135,8 @@ export default function Home() {
             </div>
 
             {/* Column 2 & 3: Service Cards */}
-            {SERVICES.map((s, idx) => (
-              <div className={`service-card service-card--simple fade-up stagger-${idx + 1}`} key={s.num}>
+            {services.map((s, idx) => (
+              <div className={`service-card service-card--simple fade-up stagger-${idx + 1}`} key={s.num || s.id || idx}>
                 {s.image && (
                   <div className="service-card__icon-container">
                     <img src={s.image} alt={s.title} className="service-card__icon-img" />
@@ -171,7 +146,7 @@ export default function Home() {
                 <Link 
                   to="/services" 
                   className="hero__pill-btn hero__pill-btn--dark hero__pill-btn--sm" 
-                  id={`service-link-${s.num}`}
+                  id={`service-link-${s.num || idx}`}
                   aria-label={`Learn more about ${s.title}`}
                 >
                   Learn more about {s.title}
@@ -194,7 +169,7 @@ export default function Home() {
           </div>
 
           <div className="team-grid">
-            {TEAM.map((m, idx) => (
+            {team.map((m, idx) => (
               <Link to="/team" className={`team-card fade-up stagger-${idx + 1}`} key={m.name}>
                 <div className="team-card__photo">
                   <div className="team-card__photo-inner">

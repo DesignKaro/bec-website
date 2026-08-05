@@ -1,4 +1,6 @@
 
+import { useSiteContent } from '../context/SiteContentContext'
+
 interface PageHeroProps {
   eyebrow?: string
   title: string
@@ -7,12 +9,15 @@ interface PageHeroProps {
   showOverlay?: boolean
 }
 
-export default function PageHero({ eyebrow, title, imageSrc = '/page-hero-bg.webp', imageAlt = 'Hero background', showOverlay = true }: PageHeroProps) {
+export default function PageHero({ eyebrow, title, imageSrc, imageAlt = 'Hero background', showOverlay = true }: PageHeroProps) {
+  const { heroes } = useSiteContent()
+  const activeImageSrc = imageSrc || heroes.subpage_bg || '/page-hero-bg.webp'
+
   return (
     <div className="page-hero">
       {/* Background Image */}
       <img
-        src={imageSrc}
+        src={activeImageSrc}
         alt={imageAlt}
         className="page-hero__bg-img"
       />
