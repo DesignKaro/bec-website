@@ -11,8 +11,8 @@ export default function Terms() {
       />
       <PageHero
         title="Terms &amp; Conditions"
-        imageSrc="/policy_hero.webp"
-        showOverlay={false}
+        imageSrc="/page-hero-bg.jpg"
+        showOverlay={true}
       />
 
       <div className="legal-content">

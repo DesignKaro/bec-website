@@ -47,8 +47,8 @@ export default function About() {
       />
       <PageHero
         title="Who we are"
-        imageSrc="/policy_hero.webp"
-        showOverlay={false}
+        imageSrc="/page-hero-bg.jpg"
+        showOverlay={true}
       />
 
       {/* ── Clinic Story ── */}

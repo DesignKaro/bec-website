@@ -56,8 +56,8 @@ export default function Services() {
       />
       <PageHero
         title="What we offer"
-        imageSrc="/policy_hero.webp"
-        showOverlay={false}
+        imageSrc="/page-hero-bg.jpg"
+        showOverlay={true}
       />
 
       {/* ── Intro ── */}

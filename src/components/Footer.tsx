@@ -1,33 +1,19 @@
-import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { AtSign, PhoneCall } from 'lucide-react'
 
 export default function Footer() {
   const year = new Date().getFullYear()
-  const videoRef = useRef<HTMLVideoElement>(null)
-
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.playbackRate = 1.4
-    }
-  }, [])
 
   return (
     <footer className="footer">
       <div className="footer__inner">
         <div className="footer__box">
-          {/* Background Video */}
-          <video
-            ref={videoRef}
-            className="footer__video"
-            autoPlay
-            loop
-            muted
-            playsInline
-          >
-            <source src="/hero-bg.webm" type="video/webm" />
-            <source src="/hero-bg.mp4" type="video/mp4" />
-          </video>
+          {/* Background Image */}
+          <img
+            src="/footer-bg.jpg"
+            alt="Footer background"
+            className="footer__bg-img"
+          />
           <div className="footer__video-overlay" />
 
           {/* Main Footer Content */}

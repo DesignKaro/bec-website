@@ -636,7 +636,8 @@ a.menu-drawer__footer-item:hover {
   background-color: #000000;
 }
 
-.page-hero__video {
+.page-hero__video,
+.page-hero__bg-img {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -1149,7 +1150,8 @@ a.menu-drawer__footer-item:hover {
   overflow: hidden;
 }
 
-.footer__video {
+.footer__video,
+.footer__bg-img {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -1810,7 +1812,8 @@ a.footer__legal-link:hover::after {
   overflow: hidden;
 }
 
-.contact-card__video {
+.contact-card__video,
+.contact-card__bg-img {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -2944,12 +2947,14 @@ a.footer__legal-link:hover::after {
   color: #ffffff;
 }
 
-.hero__video {
+.hero__video,
+.hero__bg-img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: 58% center;
   z-index: 0;
   opacity: 0.85;
 }

@@ -11,8 +11,8 @@ export default function Privacy() {
       />
       <PageHero
         title="Privacy Policy"
-        imageSrc="/policy_hero.webp"
-        showOverlay={false}
+        imageSrc="/page-hero-bg.jpg"
+        showOverlay={true}
       />
 
       <div className="legal-content">

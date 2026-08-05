@@ -57,14 +57,6 @@ export default function Home() {
     return () => clearInterval(interval)
   }, [])
 
-  const videoRef = useRef<HTMLVideoElement>(null)
-
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.playbackRate = 1.4
-    }
-  }, [])
-
   return (
     <main>
       <SEO
@@ -74,18 +66,12 @@ export default function Home() {
       />
       {/* ── Hero ── */}
       <section ref={heroRef} className={`hero${loaded ? ' loaded' : ''} hero--home`}>
-        {/* Background Video */}
-        <video
-          ref={videoRef}
-          className="hero__video"
-          autoPlay
-          loop
-          muted
-          playsInline
-        >
-          <source src="/hero-bg.webm" type="video/webm" />
-          <source src="/hero-bg.mp4" type="video/mp4" />
-        </video>
+        {/* Background Image */}
+        <img
+          src="/hero-bg.jpg"
+          alt="Hero background"
+          className="hero__bg-img"
+        />
 
         {/* Ambient Overlay */}
         <div className="hero__video-overlay" />

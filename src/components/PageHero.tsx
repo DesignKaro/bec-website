@@ -1,4 +1,3 @@
-import { useEffect, useRef } from 'react'
 
 interface PageHeroProps {
   eyebrow?: string
@@ -8,29 +7,15 @@ interface PageHeroProps {
   showOverlay?: boolean
 }
 
-export default function PageHero({ eyebrow, title, showOverlay = true }: PageHeroProps) {
-  const videoRef = useRef<HTMLVideoElement>(null)
-
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.playbackRate = 1.4
-    }
-  }, [])
-
+export default function PageHero({ eyebrow, title, imageSrc = '/page-hero-bg.jpg', imageAlt = 'Hero background', showOverlay = true }: PageHeroProps) {
   return (
     <div className="page-hero">
-      {/* Background Video */}
-      <video
-        ref={videoRef}
-        className="page-hero__video"
-        autoPlay
-        loop
-        muted
-        playsInline
-      >
-        <source src="/hero-bg.webm" type="video/webm" />
-        <source src="/hero-bg.mp4" type="video/mp4" />
-      </video>
+      {/* Background Image */}
+      <img
+        src={imageSrc}
+        alt={imageAlt}
+        className="page-hero__bg-img"
+      />
 
       {/* Overlay */}
       {showOverlay && <div className="page-hero__overlay" />}

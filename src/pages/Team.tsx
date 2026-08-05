@@ -42,8 +42,8 @@ export default function Team() {
       />
       <PageHero
         title="The people behind the clinic"
-        imageSrc="/policy_hero.webp"
-        showOverlay={false}
+        imageSrc="/page-hero-bg.jpg"
+        showOverlay={true}
       />
 
       {/* ── Intro ── */}

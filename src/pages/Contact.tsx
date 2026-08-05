@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, type FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import SEO from '../components/SEO'
 
@@ -14,13 +14,6 @@ export default function Contact() {
   const [submitted, setSubmitted] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
 
-  const videoRef = useRef<HTMLVideoElement>(null)
-
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.playbackRate = 1.4
-    }
-  }, [])
 
   const getSerializedData = () => {
     const dataParams = new URLSearchParams()
@@ -108,19 +101,13 @@ export default function Contact() {
       <div className="contact-card-wrapper">
         <div className="contact-card-container fade-in">
           
-          {/* LEFT SIDE: Info & Background Video */}
+          {/* LEFT SIDE: Info & Background Image */}
           <div className="contact-card__left">
-            <video
-              ref={videoRef}
-              className="contact-card__video"
-              autoPlay
-              loop
-              muted
-              playsInline
-            >
-              <source src="/hero-bg.webm" type="video/webm" />
-              <source src="/hero-bg.mp4" type="video/mp4" />
-            </video>
+            <img
+              src="/hero-bg.jpg"
+              alt="Background"
+              className="contact-card__bg-img"
+            />
             <div className="contact-card__left-overlay" />
             <div className="contact-card__left-content">
               <div>
