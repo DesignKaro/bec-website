@@ -956,7 +956,7 @@ const BrandedClinicSplash: React.FC = () => {
         />
       </div>
 
-      <h1
+      <div
         style={{
           fontFamily: "'Cinzel', 'Spectral', serif",
           fontSize: 'clamp(1.1rem, 2.5vw, 1.4rem)',
@@ -969,7 +969,7 @@ const BrandedClinicSplash: React.FC = () => {
         }}
       >
         The Black Lantern Clinic
-      </h1>
+      </div>
 
       <p
         style={{

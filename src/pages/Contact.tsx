@@ -222,7 +222,7 @@ export default function Contact() {
             <div className="contact-form-card">
               {submitted ? (
                 <div className="contact-form-success">
-                  <p className="contact-form-success__title">Thank you</p>
+                  <h2 className="contact-form-success__title">Thank you</h2>
                   <p className="contact-form-success__text">
                     Your message has been received. Our intake coordinators will review your details and contact you within one business day.
                   </p>
@@ -255,9 +255,9 @@ export default function Contact() {
               ) : (
                 <>
                   <div className="contact-card__intro contact-card__intro--mobile">
-                    <h1 className="contact-card__title">
+                    <h2 className="contact-card__title">
                       {contact_page.card_title}
-                    </h1>
+                    </h2>
                     <p className="contact-card__subtitle">
                       {contact_page.card_subtitle}
                     </p>

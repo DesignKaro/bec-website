@@ -109,9 +109,9 @@ export default function Home() {
             </p>
           )}
           {homepage.about_title && (
-            <p className="about-snippet__quote">
+            <h2 className="about-snippet__quote">
               {homepage.about_title}
-            </p>
+            </h2>
           )}
           {homepage.about_body && (
             <p className="about-snippet__body">
