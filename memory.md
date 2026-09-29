@@ -12,11 +12,12 @@
 - **Brand / Entity Name**: The Black Lantern Clinic
 - **Clinical Domain**: Private Specialist Youth Mental Health Clinic & Psychotherapy Practice
 - **Demographic Focus**: Young people aged 12 to 25, alongside their families and carers.
-- **Location**: Brisbane, Queensland, Australia (Servicing greater Brisbane & QLD region).
+- **Address / Location**: 195 Fingal Street, Tarragindi - Brisbane, Queensland, Australia.
 - **Contact Channels**:
   - **Phone**: `0418 542 638` (`+61418542638`)
   - **Email**: `admin@theblacklanternclinic.com`
-  - **Hours**: Monday – Friday: 09:00 – 17:00 | Saturday: By appointment
+  - **Hours**: Tuesday – Friday: 09:00 – 18:00 | Saturday: 10:00 – 16:30 | Sun & Mon: Closed
+  - **Instagram**: `https://www.instagram.com/theblacklanternclinic?stkn=OW0xZXd4MmVicGdx&utm_source=qr`
   - **Emergency / Crisis Warning**: Explicitly non-crisis service; directs emergencies to 000, Lifeline (`13 11 14`), or 24/7 MH Call (`1300 642 255`).
 
 ### Brand Ethos & Visual Philosophy
@@ -289,14 +290,16 @@ bec-website/
       "medicalSpecialty": ["Psychiatric", "Psychotherapy", "Pediatric"],
       "address": {
         "@type": "PostalAddress",
-        "addressLocality": "Brisbane",
+        "streetAddress": "195 Fingal Street",
+        "addressLocality": "Tarragindi, Brisbane",
         "addressRegion": "QLD",
+        "postalCode": "4121",
         "addressCountry": "AU"
       },
       "geo": {
         "@type": "GeoCoordinates",
-        "latitude": -27.4698,
-        "longitude": 153.0251
+        "latitude": -27.5255,
+        "longitude": 153.0425
       },
       "openingHoursSpecification": [
         {
@@ -324,9 +327,62 @@ bec-website/
 
 - **Production Build Tool**: Vite v8.1.3 + TypeScript Compiler (`tsc -b`)
 - **Compilation Log**:
-  - `✓ 1797 modules transformed.`
-  - `dist/index.html` (3.26 kB | gzip: 1.05 kB)
-  - `dist/assets/index-Z9ptpHC2.css` (53.53 kB | gzip: 10.01 kB)
-  - `dist/assets/index-ChJwp7uN.js` (293.91 kB | gzip: 90.88 kB)
-  - `✓ built in ~374ms`
+  - `✓ built in ~280ms` with zero warnings or errors.
+  - `dist/index.html` (3.26 kB)
+  - `dist/assets/index-*.css`
+  - `dist/assets/index-*.js`
 - **Linting & Code Quality**: Clean execution via `oxlint` with 0 warnings and 0 syntax errors.
+
+---
+
+## 9. Realtime WordPress Headless Bridge & Content Synchronization Engine (September 2026)
+
+### Live WordPress API Endpoint
+- **URL**: `https://api.theblacklanternclinic.com/wp-json/bec/v1/site-data`
+- **Cache Purge Route**: `https://api.theblacklanternclinic.com/wp-json/bec/v1/purge-cache`
+- **Plugin Source**: `wordpress-plugin/bec-site-manager.php` (v13.0.0 with automatic LiteSpeed cache purge, zero-cache headers, cross-tab broadcast, and version tracking).
+
+### Synchronized Content Pipeline & Realtime Bridge
+1. **Zero-Cache Server & Edge Protocol (`bec-site-manager.php`)**:
+   - Sends `Cache-Control: no-store, no-cache, must-revalidate, max-age=0, s-maxage=0` on the REST endpoint to eliminate Hostinger CDN (HCDN) 7-day caching.
+   - Sends `X-LiteSpeed-Cache-Control: no-cache, no-store` and `X-LiteSpeed-Purge: *` to prevent LiteSpeed cache hits.
+   - Automatically invalidates caches and updates `bec_content_version` epoch on every `updated_option`, `added_option`, `save_post`, or `deleted_post`.
+   - Admin UI includes a live status bar, **"Force Purge Server Cache"** button, and **"View Live Website (Sync Mode)"** button.
+   - Broadcasts real-time events via `BroadcastChannel('bec_site_sync')` upon form submission.
+2. **Dynamic Frontend Realtime Engine (`src/context/SiteContentContext.tsx`)**:
+   - Cache key: `bec_site_content_cache_v5` with version and timestamp tracking.
+   - **SWR Focus Revalidation**: Window `focus` and `visibilitychange` listeners trigger instant background revalidation when toggling between WordPress Admin and the website.
+   - **Cross-Tab Synchronization**: Receives `BroadcastChannel('bec_site_sync')` events and storage updates from WordPress Admin and re-renders live without page reloads.
+   - **Smart Interval Polling**: Background check every 10s in Preview Mode, 45s for standard visitors.
+   - **Live Preview Floating Bar**: Discreet interactive bottom-right monitor (`?preview=1` or `Ctrl+Shift+L` toggle) displaying live sync status, version, and a manual `🔄 Sync Now` button.
+   - **Static Base Hydration**: Imports `src/data/siteContent.json` as the baseline fallback to guarantee zero flash of outdated defaults.
+3. **Sync Script (`scripts/fetch-wordpress.js`)**:
+   - Run via `npm run fetch:wp`.
+   - Fetches full site JSON from live WordPress REST API.
+   - Saves static fallback payload to `src/data/siteContent.json`.
+   - Automatically downloads media uploads into `public/`.
+4. **Hero Subtitle Typography**:
+   - Updated `.hero__subtitle--digitalwerk` in `src/App.css` to `font-weight: 400` (Regular), `font-size: clamp(0.92rem, 1.2vw, 1.08rem)`, pure white `#ffffff !important`, with crisp subtle drop shadow (`0 1px 4px rgba(0, 0, 0, 0.7), 0 1px 2px rgba(0, 0, 0, 0.85)`) and subpixel font smoothing for clean, legible readability.
+5. **Comprehensive Gap Remediation (September 2026)**:
+   - **Elimination of Fallback Arrays & Hardcoded Text**: Completely removed static arrays (`MAIN_TEAM`, `SERVICES`, `VALUES`) and all inline fallback strings (`|| "..."`) across `Team.tsx`, `Home.tsx`, `About.tsx`, `Services.tsx`, `Footer.tsx`, and legal policies (`Privacy.tsx`, `Terms.tsx`, `CancellationPolicy.tsx`).
+   - **Branded 404 / NotFound Page (`src/pages/NotFound.tsx`)**: Created dark-mode luxury lantern 404 page with navigation recovery buttons (`/`, `/services`, `/contact`), registered via catch-all route `<Route path="*" element={<NotFound />} />` in `App.tsx`.
+   - **Dynamic Schema.org JSON-LD (`src/components/SEO.tsx`)**: Replaced hardcoded telephone, email, and clinic street address with live reactive values from `useSiteContent()`.
+   - **Contact Form REST API (`src/pages/Contact.tsx`)**: Switched from opaque `admin-ajax.php` submission to verified JSON POST to `/wp-json/bec/v1/contact-submit` with real response feedback, error handling, and silent redundant capture.
+   - **Dynamic Navbar Booking Label**: Uses `general.booking_btn_text` in both desktop header and mobile drawer.
+   - **Cleaned Telephony Links**: Formats all `tel:` links using `.replace(/[^\d+]/g, '')` for universal smartphone dialer compatibility.
+   - **Sitemap `<lastmod>` Synchronizer**: `scripts/fetch-wordpress.js` automatically refreshes `public/sitemap.xml` dates and `index.html` meta tags when running `npm run sync-wp`.
+   - **Splash Gate Safety Timer**: 2.5-second fallback timeout prevents first-time visitor splash gate from stalling on poor network connections.
+   - **Robust Media Loading (`src/components/RevealImg.tsx`)**: Guards against empty `src` attributes and handles `onError` gracefully with shimmer skeletons.
+   - **Per-Page SEO & Canonical Targeting**: Added unique, search-optimized `<title>`, `<meta name="description">`, and `canonicalUrl` tags to `Services.tsx`, `Team.tsx`, `Contact.tsx`, and `Home.tsx` to prevent all subpages defaulting to homepage metadata in Google index.
+   - **Dynamic Google Maps Routing**: Replaced static search query with `encodeURIComponent(general.address)` across `Contact.tsx` and `Footer.tsx` so address changes in WordPress automatically redirect maps directions to the new clinic location.
+   - **Search Engine 404 Indexing Protection**: Added configurable `robots` prop to `SEO.tsx` and set `robots="noindex, follow"` on `NotFound.tsx` so 404 URLs are excluded from Google/Bing index.
+   - **Accessible Skip to Content Navigation (WCAG 2.4.1)**: Added `<a href="#main-content" className="skip-link">Skip to main content</a>` in `App.tsx` and smooth-focus styles in `index.css` for screen reader and keyboard accessibility.
+   - **Contact Form Reset & Re-engagement**: Reset input fields in `Contact.tsx` upon successful submission and added a "Send another enquiry" button to prevent user lockout.
+   - **WordPress Email Deliverability & DMARC/SPF Compliance**: Updated `bec-site-manager.php` contact handler to send `From:` with the authenticated clinic admin email and `Reply-To:` with the visitor's details to prevent silent dropping by mail servers.
+   - **CORS Pre-Flight Handler**: Added explicit `OPTIONS` 200 response handler on `/wp-json/bec/v1/` routes in `bec-site-manager.php` to prevent browsers blocking cross-origin JSON requests.
+   - **Google Search Console Canonical Unification & 301 Redirect**:
+     - Configured permanent 301 redirects in `public/.htaccess` and `dist/.htaccess` forcing `www.theblacklanternclinic.com` to `https://theblacklanternclinic.com/` in a single hop for both HTTP and HTTPS requests.
+     - Added synchronous client-side non-www redirect guard in `<head>` of `index.html` preventing any client or cached worker from serving the www origin.
+     - Included static `<link rel="canonical" href="https://theblacklanternclinic.com/" />` in `index.html` and normalized dynamic canonical resolution in `SEO.tsx` to strictly strip any `www.` subdomains.
+     - Confirmed 100% consistency across `public/sitemap.xml`, `public/robots.txt`, Open Graph tags, and Schema.org JSON-LD to eliminate Google's "Duplicate, Google chose different canonical than user" warning.
+

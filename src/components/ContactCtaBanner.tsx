@@ -11,8 +11,8 @@ export default function ContactCtaBanner({
   body,
 }: ContactCtaBannerProps) {
   const { cta } = useSiteContent()
-  const displayTitle = title || cta.title || 'Ready to take the first step?'
-  const displayBody = body || cta.body || 'We understand that reaching out can feel difficult. Our team is here to listen, support, and guide you — at every stage of the journey.'
+  const displayTitle = title ?? cta.title
+  const displayBody = body ?? cta.body
 
   return (
     <section className="cta-banner fade-up">

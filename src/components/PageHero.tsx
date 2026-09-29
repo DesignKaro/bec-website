@@ -19,6 +19,9 @@ export default function PageHero({ eyebrow, title, imageSrc, imageAlt = 'Hero ba
       <img
         src={activeImageSrc}
         alt={imageAlt}
+        loading="eager"
+        fetchPriority="high"
+        decoding="async"
         className="page-hero__bg-img"
       />
 

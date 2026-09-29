@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom'
-import { AtSign, PhoneCall } from 'lucide-react'
+import { AtSign, PhoneCall, Heart, MapPin } from 'lucide-react'
 import { useSiteContent } from '../context/SiteContentContext'
 
 export default function Footer() {
   const year = new Date().getFullYear()
-  const { general, heroes } = useSiteContent()
+  const { general, heroes, footer } = useSiteContent()
 
   return (
     <footer className="footer">
@@ -12,8 +12,10 @@ export default function Footer() {
         <div className="footer__box">
           {/* Background Image */}
           <img
-            src={heroes.footer_bg || '/footer-bg.webp'}
+            src={heroes.footer_bg || footer?.bg || '/footer-bg.webp'}
             alt="Footer background"
+            loading="lazy"
+            decoding="async"
             className="footer__bg-img"
           />
           <div className="footer__video-overlay" />
@@ -22,7 +24,7 @@ export default function Footer() {
           <div className="footer__content-grid">
             {/* Column 1: Logo */}
             <div className="footer__brand-col">
-              <Link to="/" className="footer__logo-link">
+              <Link to="/" className="footer__logo-link" aria-label="The Black Lantern Clinic Homepage">
                 <img 
                   src="/white-lan.webp" 
                   alt="The Black Lantern Clinic" 
@@ -30,7 +32,7 @@ export default function Footer() {
                 />
               </Link>
               <p className="footer__brand-desc">
-                Specialist psychiatric and mental health care for young people aged 12 to 25.
+                {footer?.brand_desc || 'Specialist psychiatric and mental health care for young people aged 12 to 25.'}
               </p>
             </div>
 
@@ -50,8 +52,21 @@ export default function Footer() {
                   <div className="footer__icon-badge">
                     <PhoneCall size={14} strokeWidth={1.8} className="footer__contact-icon" />
                   </div>
-                  <a href={`tel:${general.phone.replace(/\s+/g, '')}`} className="footer__link">
+                  <a href={`tel:${general.phone.replace(/[^\d+]/g, '')}`} className="footer__link">
                     {general.phone}
+                  </a>
+                </li>
+                <li className="footer__contact-item--address">
+                  <div className="footer__icon-badge">
+                    <MapPin size={14} strokeWidth={1.8} className="footer__contact-icon" />
+                  </div>
+                  <a
+                    href={`https://maps.google.com/?q=${encodeURIComponent(general.address || '195 Fingal Street, Tarragindi QLD 4121')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="footer__link footer__address-text"
+                  >
+                    {general.address || general.location_text}
                   </a>
                 </li>
               </ul>
@@ -73,10 +88,10 @@ export default function Footer() {
               <span className="footer__section-title">Hours &amp; Care</span>
               <ul className="footer__hours-list">
                 <li>{general.hours}</li>
-                <li>Sat: By appointment only</li>
+                <li>{general.sat_hours || 'Sat: 10am - 4:30pm'}</li>
                 <li className="footer__crisis-item">
-                  <strong>Crisis Support</strong><br />
-                  {general.crisis_text}
+                  <strong>{footer?.crisis_title || 'Crisis Support'}</strong><br />
+                  {general.crisis_text || footer?.crisis_text}
                 </li>
               </ul>
             </div>
@@ -86,7 +101,7 @@ export default function Footer() {
           <div className="footer__legal-bar">
             <div className="footer__legal-left">
               <span className="footer__copyright-text">
-                © {year} The Black Lantern Clinic
+                © {year} {footer.copyright || 'The Black Lantern Clinic'}
               </span>
               <Link to="/privacy" className="footer__legal-link">Privacy Policy</Link>
               <Link to="/terms" className="footer__legal-link">Terms &amp; Conditions</Link>
@@ -94,7 +109,19 @@ export default function Footer() {
             </div>
             <div className="footer__legal-right">
               <span className="footer__credit">
-                Youth Mental Health · Brisbane, Queensland
+                {footer.credit || '195 Fingal Street, Tarragindi - Brisbane, Queensland'}
+              </span>
+              <span className="footer__legal-dot" aria-hidden="true">·</span>
+              <span className="footer__made-with">
+                Made with <Heart size={12} className="footer__heart-icon" fill="#e25555" /> by{' '}
+                <a 
+                  href="https://argro.io" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="footer__agency-link"
+                >
+                  Argro
+                </a>
               </span>
             </div>
           </div>

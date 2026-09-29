@@ -245,12 +245,32 @@ export default function SmokyBackground({
         }
       }
 
-      if (!prefersReducedMotion) {
+      if (!prefersReducedMotion && isVisible && !document.hidden) {
+        animationFrameId = requestAnimationFrame(render)
+      }
+    }
+
+    let isVisible = true
+    const observer = new IntersectionObserver(([entry]) => {
+      const wasVisible = isVisible
+      isVisible = entry.isIntersecting
+      if (isVisible && !wasVisible && !prefersReducedMotion) {
+        cancelAnimationFrame(animationFrameId)
+        animationFrameId = requestAnimationFrame(render)
+      }
+    }, { threshold: 0.05 })
+
+    const handleVisibilityChange = () => {
+      if (!document.hidden && isVisible && !prefersReducedMotion) {
+        cancelAnimationFrame(animationFrameId)
         animationFrameId = requestAnimationFrame(render)
       }
     }
 
     window.addEventListener('resize', resize)
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    if (container) observer.observe(container)
+
     resize()
 
     if (prefersReducedMotion) {
@@ -261,9 +281,12 @@ export default function SmokyBackground({
 
     return () => {
       window.removeEventListener('resize', resize)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
       if (container) {
+        observer.unobserve(container)
         container.removeEventListener('mousemove', handleMouseMove)
       }
+      observer.disconnect()
       cancelAnimationFrame(animationFrameId)
     }
   }, [opacity, showEmbers])

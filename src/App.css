@@ -1245,6 +1245,10 @@ a.menu-drawer__footer-item:hover {
   color: rgba(255, 255, 255, 0.85);
 }
 
+.footer__contact-list li.footer__contact-item--address {
+  align-items: flex-start;
+}
+
 .footer__icon-badge {
   width: 26px;
   height: 26px;
@@ -1332,6 +1336,48 @@ a.footer__link:hover::after {
   font-size: 0.74rem;
   color: rgba(255, 255, 255, 0.65);
   opacity: 1;
+}
+
+.footer__legal-right {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.footer__legal-dot {
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.74rem;
+}
+
+.footer__made-with {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.74rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.footer__heart-icon {
+  display: inline-block;
+  vertical-align: middle;
+  transition: transform 0.25s ease;
+}
+
+.footer__made-with:hover .footer__heart-icon {
+  transform: scale(1.3);
+}
+
+.footer__agency-link {
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color var(--transition-fast), text-decoration-color var(--transition-fast);
+}
+
+.footer__agency-link:hover {
+  color: #ffffff;
 }
 
 .footer__legal-link {
@@ -1866,6 +1912,18 @@ a.footer__legal-link:hover::after {
   letter-spacing: normal;
 }
 
+.contact-card__intro--mobile {
+  display: none;
+}
+
+.contact-card__info-header--mobile {
+  display: none;
+}
+
+.contact-card__intro--desktop {
+  display: block;
+}
+
 .contact-card__details-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1949,12 +2007,15 @@ a.footer__legal-link:hover::after {
   gap: 0.6rem;
 }
 
-.contact-form-group label {
+.contact-form-group label,
+.contact-form-label {
+  display: block;
   font-size: 0.72rem;
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--color-text-muted);
+  margin-bottom: 0.35rem;
 }
 
 .contact-form-group input,
@@ -2186,9 +2247,10 @@ a.footer__legal-link:hover::after {
     grid-template-columns: 1fr;
   }
 
-  /* Contact */
+  /* Contact - Stacking: Form First on Tablet & Phone */
   .contact-card-container {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
     border-radius: 16px;
   }
 
@@ -2246,18 +2308,52 @@ a.footer__legal-link:hover::after {
 
   /* ── Contact card ────────────────────────────────────── */
   .contact-page-main {
-    padding: calc(var(--nav-height) + 1rem) 0 2rem;
+    padding: calc(var(--nav-height) + 1.75rem) 0 2rem;
+  }
+  .contact-card-wrapper {
+    padding: calc(var(--nav-height) + 1.75rem) 0 2rem;
+  }
+  .contact-card__right {
+    order: 1;
+    border-bottom: 1px solid var(--color-border-medium);
+    padding: 3.5rem 2rem 2.75rem;
   }
   .contact-card__left {
+    order: 2;
     min-height: auto;
     padding: 3rem 2rem;
   }
   .contact-card__left-content {
     padding: 0;
-    gap: 3.5rem;
+    gap: 2.5rem;
   }
-  .contact-card__right {
-    padding: 3rem 2rem;
+  .contact-card__intro--desktop {
+    display: none;
+  }
+  .contact-card__intro--mobile {
+    display: block;
+    margin-bottom: 2rem;
+  }
+  .contact-card__intro--mobile .contact-card__title {
+    color: #1C1917;
+    margin-bottom: 0.75rem;
+    font-size: clamp(1.65rem, 6.5vw, 2.2rem);
+    line-height: 1.2;
+  }
+  .contact-card__intro--mobile .contact-card__subtitle {
+    color: #57534E;
+    font-size: 0.92rem;
+    line-height: 1.65;
+    max-width: 100%;
+  }
+  .contact-card__info-header--mobile {
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+  .contact-card__info-header--mobile .contact-card__detail-label {
+    font-size: 0.88rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
   }
   .contact-minimal-form {
     gap: 1.5rem;
@@ -2310,7 +2406,7 @@ a.footer__legal-link:hover::after {
 
   /* Footer layout: brand + info full width, rest half */
   .footer__content-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 0.6fr 1.4fr;
     gap: 2.5rem;
   }
   .footer__brand-col,
@@ -2377,14 +2473,6 @@ a.footer__legal-link:hover::after {
   /* Team card aspect ratio: portrait on large phones */
   .team-card__photo {
     aspect-ratio: 4 / 3;
-  }
-
-  /* Footer: all cols full-width at tablet */
-  .footer__brand-col,
-  .footer__info-col,
-  .footer__menu-col,
-  .footer__hours-col {
-    grid-column: span 2;
   }
 }
 
@@ -2622,14 +2710,16 @@ a.footer__legal-link:hover::after {
 
   /* ── Footer ──────────────────────────────────────────── */
   .footer__content-grid {
-    grid-template-columns: 1fr;
-    gap: 2.5rem;
+    grid-template-columns: 0.6fr 1.4fr;
+    gap: 2rem 1.25rem;
   }
   .footer__brand-col,
-  .footer__info-col,
+  .footer__info-col {
+    grid-column: span 2;
+  }
   .footer__menu-col,
   .footer__hours-col {
-    grid-column: 1;
+    grid-column: span 1;
   }
   .footer__box {
     padding: 2.5rem 1.25rem 1.5rem;
@@ -2641,20 +2731,28 @@ a.footer__legal-link:hover::after {
 
   /* ── Contact page ────────────────────────────────────── */
   .contact-page-main {
-    padding: calc(var(--nav-height) + 0.85rem) 0 1.5rem;
+    padding: calc(var(--nav-height) + 1.5rem) 0 1.75rem;
   }
   .contact-card-wrapper {
-    padding: calc(var(--nav-height) + 1.25rem) 0 1.5rem;
+    padding: calc(var(--nav-height) + 1.5rem) 0 1.75rem;
+  }
+  .contact-card__right {
+    padding: 3rem 1.5rem 2.25rem;
+  }
+  .contact-card__left {
+    padding: 2.75rem 1.5rem;
   }
   .contact-card__left-content {
     padding: 0;
-    gap: 2.5rem;
+    gap: 2rem;
   }
-  .contact-card__left {
-    padding: 2.5rem 1.5rem;
+  .contact-card__intro--mobile {
+    margin-bottom: 1.75rem;
   }
-  .contact-card__right {
-    padding: 2.5rem 1.5rem;
+  .contact-card__intro--mobile .contact-card__title {
+    font-size: clamp(1.5rem, 6.5vw, 1.9rem);
+    margin-top: 0;
+    margin-bottom: 0.85rem;
   }
   .contact-card__title {
     font-size: clamp(1.6rem, 7vw, 2.2rem);
@@ -2750,9 +2848,17 @@ a.footer__legal-link:hover::after {
   }
 
   /* Contact */
-  .contact-card__left,
+  .contact-card-wrapper {
+    padding: calc(var(--nav-height) + 1.25rem) 0 1.5rem;
+  }
   .contact-card__right {
-    padding: 2rem 1rem;
+    padding: 2.5rem 1.15rem 1.75rem;
+  }
+  .contact-card__left {
+    padding: 2.25rem 1.15rem;
+  }
+  .contact-card__intro--mobile {
+    margin-bottom: 1.5rem;
   }
   .minimal-submit-btn {
     width: 100%;
@@ -2894,7 +3000,11 @@ a.footer__legal-link:hover::after {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  min-height: 240px;
+  min-height: 260px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
+  transition: transform var(--transition), box-shadow var(--transition);
 }
 
 .service-card__icon-container {
@@ -3028,13 +3138,17 @@ a.footer__legal-link:hover::after {
 
 .hero__subtitle--digitalwerk {
   font-family: var(--font-sans);
-  font-size: clamp(0.95rem, 1.4vw, 1.15rem);
-  font-weight: 300;
-  line-height: 1.7;
-  color: rgba(255, 255, 255, 0.8);
-  max-width: 640px;
+  font-size: clamp(0.92rem, 1.2vw, 1.08rem);
+  font-weight: 400;
+  line-height: 1.6;
+  color: #ffffff !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7), 0 1px 2px rgba(0, 0, 0, 0.85);
+  max-width: 620px;
   margin: 0 auto 2.5rem;
   text-align: center;
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Digitalwerk Dashed Pill CTA Button */

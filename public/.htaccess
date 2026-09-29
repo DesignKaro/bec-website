@@ -3,11 +3,16 @@
   RewriteEngine On
   RewriteBase /
   
-  # Redirect HTTP to HTTPS
-  RewriteCond %{HTTPS} off
-  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  # 1. Permanent 301 Redirect: Force non-www (both HTTP and HTTPS in a single hop)
+  RewriteCond %{HTTP_HOST} ^www\.theblacklanternclinic\.com$ [NC]
+  RewriteRule ^(.*)$ https://theblacklanternclinic.com/$1 [R=301,L]
 
-  # SPA Routing
+  # 2. Permanent 301 Redirect: Force HTTPS (handles direct & reverse proxy connections)
+  RewriteCond %{HTTPS} off [OR]
+  RewriteCond %{HTTP:X-Forwarded-Proto} =http
+  RewriteRule ^(.*)$ https://theblacklanternclinic.com/$1 [R=301,L]
+
+  # 3. SPA Routing
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d

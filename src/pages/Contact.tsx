@@ -4,7 +4,7 @@ import SEO from '../components/SEO'
 import { useSiteContent } from '../context/SiteContentContext'
 
 export default function Contact() {
-  const { general } = useSiteContent()
+  const { general, contact_page } = useSiteContent()
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
@@ -18,125 +18,177 @@ export default function Contact() {
 
 
   const getSerializedData = () => {
-    const dataParams = new URLSearchParams()
-    dataParams.append('names[first_name]', firstName)
-    dataParams.append('names[last_name]', lastName)
-    dataParams.append('first_name', firstName)
-    dataParams.append('last_name', lastName)
-    dataParams.append('firstname', firstName)
-    dataParams.append('lastname', lastName)
-    dataParams.append('email', email)
-    dataParams.append('input_email', email)
-    dataParams.append('email_address', email)
-    dataParams.append('phone', phone)
-    dataParams.append('mobile', phone)
-    dataParams.append('mobile_number', phone)
-    dataParams.append('phone_mobile', phone)
-    dataParams.append('numeric-1', phone)
-    dataParams.append('message', message)
-    dataParams.append('description', message)
-    dataParams.append('textarea', message)
-    return dataParams.toString()
+    // 1. Pack all form fields into URL-encoded format expected inside $_POST['data']
+    const innerParams = new URLSearchParams()
+
+    // Name fields (nested and flat formats)
+    innerParams.append('names[first_name]', firstName.trim())
+    innerParams.append('names[last_name]', lastName.trim())
+    innerParams.append('first_name', firstName.trim())
+    innerParams.append('last_name', lastName.trim())
+    innerParams.append('firstname', firstName.trim())
+    innerParams.append('lastname', lastName.trim())
+    innerParams.append('name', `${firstName.trim()} ${lastName.trim()}`.trim())
+
+    // Email fields
+    innerParams.append('email', email.trim())
+    innerParams.append('input_email', email.trim())
+    innerParams.append('email_address', email.trim())
+
+    // Phone fields
+    innerParams.append('phone', phone.trim())
+    innerParams.append('mobile', phone.trim())
+    innerParams.append('mobile_number', phone.trim())
+    innerParams.append('phone_mobile', phone.trim())
+    innerParams.append('numeric-1', phone.trim())
+    innerParams.append('phone-1', phone.trim())
+
+    // Message fields
+    innerParams.append('message', message.trim())
+    innerParams.append('description', message.trim())
+    innerParams.append('comments', message.trim())
+    innerParams.append('textarea', message.trim())
+
+    // Terms & Conditions / Agreement
+    innerParams.append('accepted_terms', acceptedTerms ? 'yes' : 'no')
+    innerParams.append('terms-n-condition', acceptedTerms ? 'on' : '')
+    innerParams.append('agree', acceptedTerms ? 'on' : '')
+    innerParams.append('checkbox', acceptedTerms ? '1' : '0')
+
+    const serializedData = innerParams.toString()
+
+    // 2. Fluent Forms AJAX submission handler parses $_POST['data'] with parse_str()
+    const payload = new URLSearchParams()
+    payload.append('action', 'fluentform_submit')
+    payload.append('form_id', '3')
+    payload.append('data', serializedData)
+
+    // Also append flat fields at top level as safeguard
+    innerParams.forEach((val, key) => {
+      payload.append(key, val)
+    })
+
+    return payload.toString()
   }
 
-  const validatePhone = (val: string): boolean => {
-    const digitsOnly = val.replace(/\D/g, '')
-    return digitsOnly.length >= 6
-  }
-
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    if (submitting) return
+    if (!acceptedTerms) {
+      setErrorMessage('Please accept the terms and conditions to proceed.')
+      return
+    }
 
     setSubmitting(true)
     setErrorMessage('')
 
-    if (phone && !validatePhone(phone)) {
-      setErrorMessage('Please enter a valid phone number.')
-      setSubmitting(false)
-      return
-    }
-
-    const serializedData = getSerializedData()
-
     try {
-      const payload = new URLSearchParams()
-      payload.append('action', 'fluentform_submit')
-      payload.append('form_id', '3')
-      payload.append('data', serializedData)
-      payload.append('names[first_name]', firstName)
-      payload.append('names[last_name]', lastName)
-      payload.append('first_name', firstName)
-      payload.append('last_name', lastName)
-      payload.append('email', email)
-      payload.append('phone', phone)
-      payload.append('mobile', phone)
-      payload.append('phone_mobile', phone)
-      payload.append('numeric-1', phone)
-      payload.append('message', message)
-
-      await fetch('https://api.theblacklanternclinic.com/wp-admin/admin-ajax.php', {
+      // 1. Primary submission via REST API with verified response and error handling
+      const res = await fetch('https://api.theblacklanternclinic.com/wp-json/bec/v1/contact-submit', {
         method: 'POST',
-        mode: 'no-cors',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Content-Type': 'application/json',
         },
-        body: payload.toString(),
+        body: JSON.stringify({
+          first_name: firstName.trim(),
+          last_name: lastName.trim(),
+          email: email.trim(),
+          phone: phone.trim(),
+          message: message.trim(),
+        }),
       })
 
+      const data = await res.json().catch(() => null)
+      if (!res.ok || (data && data.success === false)) {
+        throw new Error((data && data.message) || 'Submission failed. Please verify your details and try again.')
+      }
+
+      // 2. Redundant capture via Fluent Forms in background
+      try {
+        fetch('https://api.theblacklanternclinic.com/wp-admin/admin-ajax.php', {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          },
+          body: getSerializedData(),
+        }).catch(() => {})
+      } catch {
+        // Redundant capture error swallowed safely
+      }
+
       setSubmitted(true)
-    } catch (err) {
-      console.warn('Submission notice:', err)
-      setSubmitted(true)
+      setFirstName('')
+      setLastName('')
+      setEmail('')
+      setPhone('')
+      setMessage('')
+      setAcceptedTerms(false)
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Unable to submit your message right now. Please call or email our clinic directly.'
+      setErrorMessage(msg)
     } finally {
       setSubmitting(false)
     }
   }
 
   return (
-    <main className="contact-page-main">
+    <main>
       <SEO
-        title="Contact Us | The Black Lantern Clinic Brisbane"
-        description="Get in touch with our Brisbane clinic team. Enquire about appointments, referrals, fees, and location in Brisbane, QLD."
+        title={`${contact_page.hero_title || 'Contact Us'} | The Black Lantern Clinic Brisbane`}
+        description="Contact The Black Lantern Clinic in Tarragindi, Brisbane. Inquire about youth psychiatry, psychotherapy, consultations, fees, and referral pathways."
         canonicalUrl="https://theblacklanternclinic.com/contact"
       />
+      
+      {/* Dynamic Full-Width Floating Contact Card Container */}
       <div className="contact-card-wrapper">
         <div className="contact-card-container fade-in">
           
           {/* LEFT SIDE: Info & Background Image */}
           <div className="contact-card__left">
             <img
-              src="/hero-bg.webp"
+              src={contact_page.hero_bg || "/contact_hero.webp"}
               alt="Background"
               className="contact-card__bg-img"
             />
             <div className="contact-card__left-overlay" />
             <div className="contact-card__left-content">
-              <div>
+              <div className="contact-card__intro contact-card__intro--desktop">
                 <h1 className="contact-card__title">
-                  You have questions.<br />
-                  We have time.
+                  {contact_page.card_title}
                 </h1>
                 <p className="contact-card__subtitle">
-                  Whether you're a young person, a parent, a carer, or a GP — we're happy to talk.
-                  You don't need to have everything figured out before you call.
+                  {contact_page.card_subtitle}
                 </p>
+              </div>
+
+              <div className="contact-card__info-header contact-card__info-header--mobile">
+                <span className="contact-card__detail-label">Clinic Information</span>
               </div>
 
               <div className="contact-card__details-grid">
                 <div className="contact-card__detail-block">
                   <span className="contact-card__detail-label">Hours</span>
                   <p className="contact-card__detail-value">
-                    Mon – Fri: 09:00 – 17:00<br />
-                    Sat: By appointment
+                    {general.hours}<br />
+                    {general.sat_hours}
                   </p>
                 </div>
                 <div className="contact-card__detail-block">
-                  <span className="contact-card__detail-label">Support Channels</span>
+                  <span className="contact-card__detail-label">Address</span>
                   <p className="contact-card__detail-value">
-                    GPs &amp; Medical Referrals<br />
-                    Parent &amp; Carer Support<br />
-                    Self-Referrals Welcome
+                    <a
+                      href={`https://maps.google.com/?q=${encodeURIComponent(general.address || '195 Fingal Street, Tarragindi QLD 4121')}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {general.address}
+                    </a>
+                  </p>
+                </div>
+                <div className="contact-card__detail-block">
+                  <span className="contact-card__detail-label">Contact</span>
+                  <p className="contact-card__detail-value">
+                    <a href={`tel:${general.phone.replace(/[^\d+]/g, '')}`}>{general.phone}</a>
                   </p>
                 </div>
                 <div className="contact-card__detail-block">
@@ -147,10 +199,12 @@ export default function Contact() {
                     </a>
                   </p>
                 </div>
-                <div className="contact-card__detail-block">
-                  <span className="contact-card__detail-label">Contact</span>
+                <div className="contact-card__detail-block contact-card__detail-block--full">
+                  <span className="contact-card__detail-label">Support Channels</span>
                   <p className="contact-card__detail-value">
-                    <a href={`tel:${general.phone.replace(/\s+/g, '')}`}>{general.phone}</a>
+                    GPs &amp; Medical Referrals<br />
+                    Parent &amp; Carer Support<br />
+                    Self-Referrals Welcome
                   </p>
                 </div>
                 <div className="contact-card__detail-block contact-card__detail-block--full">
@@ -172,31 +226,70 @@ export default function Contact() {
                   <p className="contact-form-success__text">
                     Your message has been received. Our intake coordinators will review your details and contact you within one business day.
                   </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSubmitted(false)
+                      setFirstName('')
+                      setLastName('')
+                      setEmail('')
+                      setPhone('')
+                      setMessage('')
+                      setAcceptedTerms(false)
+                    }}
+                    className="minimal-submit-btn"
+                    style={{
+                      marginTop: '1.5rem',
+                      width: 'auto',
+                      padding: '0.75rem 1.6rem',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '0.88rem',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Send another enquiry
+                  </button>
                 </div>
               ) : (
-                <form className="contact-minimal-form" onSubmit={handleSubmit}>
+                <>
+                  <div className="contact-card__intro contact-card__intro--mobile">
+                    <h1 className="contact-card__title">
+                      {contact_page.card_title}
+                    </h1>
+                    <p className="contact-card__subtitle">
+                      {contact_page.card_subtitle}
+                    </p>
+                  </div>
+
+                  <form className="contact-minimal-form" onSubmit={handleSubmit}>
                   {errorMessage && (
-                    <div className="contact-form-error">
+                    <div className="contact-form-error" role="alert" aria-live="polite">
                       {errorMessage}
                     </div>
                   )}
 
                   <div className="contact-form-row">
                     <div className="contact-form-group">
+                      <label htmlFor="contact-first-name" className="contact-form-label">First Name *</label>
                       <input
-                        id="contact-first-name"
                         type="text"
-                        placeholder="First Name"
+                        id="contact-first-name"
+                        autoComplete="given-name"
+                        placeholder="e.g. Sarah"
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
                         required
                       />
                     </div>
                     <div className="contact-form-group">
+                      <label htmlFor="contact-last-name" className="contact-form-label">Last Name *</label>
                       <input
-                        id="contact-last-name"
                         type="text"
-                        placeholder="Last Name"
+                        id="contact-last-name"
+                        autoComplete="family-name"
+                        placeholder="e.g. Jenkins"
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
                         required
@@ -205,10 +298,12 @@ export default function Contact() {
                   </div>
 
                   <div className="contact-form-group">
+                    <label htmlFor="contact-email" className="contact-form-label">Email Address *</label>
                     <input
-                      id="contact-email"
                       type="email"
-                      placeholder="Email"
+                      id="contact-email"
+                      autoComplete="email"
+                      placeholder="e.g. sarah@example.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
@@ -216,28 +311,23 @@ export default function Contact() {
                   </div>
 
                   <div className="contact-form-group">
+                    <label htmlFor="contact-phone" className="contact-form-label">Phone Number *</label>
                     <input
-                      id="contact-phone"
                       type="tel"
-                      placeholder="Phone Number (e.g. 0418 542 638)"
+                      id="contact-phone"
+                      autoComplete="tel"
+                      placeholder="e.g. 0400 000 000"
                       value={phone}
-                      onChange={(e) => {
-                        setPhone(e.target.value)
-                        if (errorMessage) setErrorMessage('')
-                      }}
-                      onBlur={() => {
-                        if (phone && !validatePhone(phone)) {
-                          setErrorMessage('Please enter a valid phone number (e.g. 0418 542 638 or +61 418 542 638).')
-                        }
-                      }}
+                      onChange={(e) => setPhone(e.target.value)}
                       required
                     />
                   </div>
 
                   <div className="contact-form-group">
+                    <label htmlFor="contact-message" className="contact-form-label">Enquiry Message *</label>
                     <textarea
                       id="contact-message"
-                      placeholder="Enquiry"
+                      placeholder="How can our clinic help you?"
                       rows={5}
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
@@ -264,17 +354,20 @@ export default function Contact() {
                       type="submit"
                       className="minimal-submit-btn"
                       disabled={submitting}
+                      aria-label={submitting ? 'Sending enquiry...' : 'Submit enquiry form'}
                     >
                       {submitting ? 'Sending...' : 'Submit'}
                     </button>
                   </div>
                 </form>
-              )}
+              </>
+            )}
             </div>
           </div>
 
         </div>
       </div>
+
     </main>
   )
 }

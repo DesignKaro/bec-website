@@ -2,20 +2,37 @@
 <html lang="en-AU">
   <head>
     <meta charset="UTF-8" />
+    <!-- Immediate Canonical Domain Guard: Force non-www across all clients -->
+    <script>
+      if (window.location.hostname === 'www.theblacklanternclinic.com') {
+        window.location.replace('https://theblacklanternclinic.com' + window.location.pathname + window.location.search + window.location.hash);
+      }
+    </script>
+    <link rel="canonical" href="https://theblacklanternclinic.com/" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-X47LBWYD46"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-X47LBWYD46');
+    </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/black-lan.webp" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#121212" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="author" content="The Black Lantern Clinic" />
     <meta name="geo.region" content="AU-QLD" />
-    <meta name="geo.placename" content="Brisbane" />
-    <meta name="description" content="Specialist youth mental health clinic in Brisbane for ages 12–25. Grounded, person-centred psychiatric assessment & evidence-based therapy." />
+    <meta name="geo.placename" content="195 Fingal Street, Tarragindi, Brisbane, Queensland" />
+    <meta name="description" content="Private youth mental health clinic in Tarragindi, Brisbane, providing psychiatric assessment, treatment and therapeutic support for young people aged 12–25." />
     <meta name="keywords" content="youth mental health brisbane, child psychiatrist brisbane, adolescent psychiatry queensland, youth therapy brisbane, EMDR therapy brisbane, private youth clinic, Dr Joel Adams-Bedford, Rebecca Willis" />
     
     <!-- Open Graph / Facebook / LinkedIn -->
     <meta property="og:site_name" content="The Black Lantern Clinic" />
-    <meta property="og:title" content="The Black Lantern Clinic | Specialist Youth Psychiatry & Therapy Brisbane" />
-    <meta property="og:description" content="Specialist youth mental health clinic in Brisbane providing psychiatric assessment and evidence-based therapy for young people aged 12 to 25." />
+    <meta property="og:title" content="Psychiatrist Brisbane | Youth Mental Health | The Black Lantern Clinic" />
+    <meta property="og:description" content="Private youth mental health clinic in Tarragindi, Brisbane, providing psychiatric assessment, treatment and therapeutic support for young people aged 12–25." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://theblacklanternclinic.com/" />
     <meta property="og:image" content="https://theblacklanternclinic.com/og-image.webp" />
@@ -26,18 +43,53 @@
 
     <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="The Black Lantern Clinic | Specialist Youth Psychiatry & Therapy Brisbane" />
-    <meta name="twitter:description" content="Specialist youth mental health clinic in Brisbane providing psychiatric assessment and evidence-based therapy for young people aged 12 to 25." />
+    <meta name="twitter:title" content="Psychiatrist Brisbane | Youth Mental Health | The Black Lantern Clinic" />
+    <meta name="twitter:description" content="Private youth mental health clinic in Tarragindi, Brisbane, providing psychiatric assessment, treatment and therapeutic support for young people aged 12–25." />
     <meta name="twitter:image" content="https://theblacklanternclinic.com/og-image.webp" />
     <meta name="twitter:image:alt" content="The Black Lantern Clinic - Specialist Youth Psychiatry & Therapy Brisbane" />
+
+    <!-- Preconnect & DNS prefetch for WordPress backend & media domain -->
+    <link rel="preconnect" href="https://api.theblacklanternclinic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://api.theblacklanternclinic.com" />
+    <script>
+      (function() {
+        try {
+          var heroUrl = '/hero-bg.webp';
+          var path = window.location.pathname || '';
+          var cached = localStorage.getItem('bec_site_content_cache_v5') || localStorage.getItem('bec_site_content_cache_v4') || localStorage.getItem('bec_site_content_cache_v2');
+          if (cached) {
+            var data = JSON.parse(cached);
+            if (path === '/' || path === '') {
+              heroUrl = (data.homepage && data.homepage.hero_bg) || (data.heroes && data.heroes.home_bg) || heroUrl;
+            } else if (path.indexOf('/about') === 0) {
+              heroUrl = (data.about && data.about.hero_bg) || (data.heroes && data.heroes.subpage_bg) || '/page-hero-bg.webp';
+            } else if (path.indexOf('/services') === 0) {
+              heroUrl = (data.services_page && data.services_page.hero_bg) || (data.heroes && data.heroes.subpage_bg) || '/page-hero-bg.webp';
+            } else if (path.indexOf('/team') === 0) {
+              heroUrl = (data.team_page && data.team_page.hero_bg) || (data.heroes && data.heroes.subpage_bg) || '/page-hero-bg.webp';
+            } else {
+              heroUrl = (data.heroes && data.heroes.subpage_bg) || '/page-hero-bg.webp';
+            }
+          }
+          if (heroUrl) {
+            var l = document.createElement('link');
+            l.rel = 'preload';
+            l.as = 'image';
+            l.href = heroUrl;
+            l.fetchPriority = 'high';
+            document.head.appendChild(l);
+          }
+        } catch (e) {}
+      })();
+    </script>
 
     <!-- Fonts & Canonical link fallback -->
     <link rel="canonical" href="https://theblacklanternclinic.com/" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Spectral:ital,wght@0,300;1,300&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Spectral:ital,wght@0,300;1,300&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     
-    <title>The Black Lantern Clinic | Specialist Youth Psychiatry & Therapy Brisbane</title>
+    <title>Psychiatrist Brisbane | Youth Mental Health | The Black Lantern Clinic</title>
   </head>
   <body>
     <div id="root"></div>

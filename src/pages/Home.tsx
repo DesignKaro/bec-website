@@ -6,7 +6,7 @@ import SEO from '../components/SEO'
 import { useSiteContent } from '../context/SiteContentContext'
 
 export default function Home() {
-  const { heroes, services, team } = useSiteContent()
+  const { heroes, homepage, services, team, cta } = useSiteContent()
   const heroRef = useRef<HTMLElement>(null)
   const [loaded, setLoaded] = useState(false)
   const [currentTime, setCurrentTime] = useState('')
@@ -35,17 +35,16 @@ export default function Home() {
 
   return (
     <main>
-      <SEO
-        title="The Black Lantern Clinic | Specialist Youth Psychiatry & Therapy Brisbane"
-        description="Specialist youth mental health clinic in Brisbane for ages 12–25. Grounded, person-centred psychiatric assessment & evidence-based therapy."
-        canonicalUrl="https://theblacklanternclinic.com/"
-      />
+      <SEO canonicalUrl="https://theblacklanternclinic.com/" />
       {/* ── Hero ── */}
       <section ref={heroRef} className={`hero${loaded ? ' loaded' : ''} hero--home`}>
         {/* Background Image */}
         <img
-          src={heroes.home_bg || '/hero-bg.webp'}
+          src={homepage.hero_bg || heroes.home_bg || '/hero-bg.webp'}
           alt="Hero background"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
           className="hero__bg-img"
         />
 
@@ -56,22 +55,25 @@ export default function Home() {
         <div className="hero__content hero__content--digitalwerk">
           <div className="hero__top-image-container">
             <img
-              src="/hero-sec-bg.webp"
+              src={homepage.hero_emblem || '/hero-sec-bg.webp'}
               alt="The Black Lantern Clinic"
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
               className="hero__top-image"
             />
           </div>
 
           <h1 className="hero__title hero__title--digitalwerk">
-            <span className="hero__title-line">{heroes.home_title}</span>
+            <span className="hero__title-line">{homepage.hero_title || heroes.home_title}</span>
           </h1>
 
           <p className="hero__subtitle--digitalwerk">
-            {heroes.home_subtitle}
+            {homepage.hero_subtitle || heroes.home_subtitle}
           </p>
 
-          <Link to="/contact" className="hero__pill-btn">
-            Get in Touch
+          <Link to={homepage.hero_btn_url || '/contact'} className="hero__pill-btn">
+            {homepage.hero_btn_text || 'Get in Touch'}
           </Link>
         </div>
 
@@ -101,18 +103,28 @@ export default function Home() {
       {/* ── About Snippet ── */}
       <section id="about-section" className="about-snippet">
         <div className="about-snippet__content fade-up">
-          <p className="eyebrow" style={{ marginBottom: '1.2rem' }}>About the clinic</p>
-          <p className="about-snippet__quote">
-            "A steady light,<br />when the path feels uncertain."
-          </p>
-          <p className="about-snippet__body">
-            The Black Lantern Clinic is a private specialist youth mental health clinic in Brisbane, Queensland. We see young people aged 12 to 25, and where it helps, their families and carers too. Our clinic’s philosophy is in our name, like a lantern, we aim to provide a guiding light to illuminate the darkness and show you the path forward.
-          </p>
-          <Link to="/about" className="link-arrow" id="home-about-link">Learn about us</Link>
+          {homepage.about_eyebrow && (
+            <p className="eyebrow" style={{ marginBottom: '1.2rem' }}>
+              {homepage.about_eyebrow}
+            </p>
+          )}
+          {homepage.about_title && (
+            <p className="about-snippet__quote">
+              {homepage.about_title}
+            </p>
+          )}
+          {homepage.about_body && (
+            <p className="about-snippet__body">
+              {homepage.about_body}
+            </p>
+          )}
+          <Link to={homepage.about_link_url || '/about'} className="link-arrow" id="home-about-link">
+            {homepage.about_link_text || 'Learn about us'}
+          </Link>
         </div>
         <div className="about-snippet__image">
           <div className="about-snippet__image-inner">
-            <RevealImg src="/about.webp" alt="The Black Lantern Clinic reception" />
+            <RevealImg src={homepage.about_img || '/about.webp'} alt="The Black Lantern Clinic reception" />
           </div>
         </div>
       </section>
@@ -126,7 +138,7 @@ export default function Home() {
               <div className="services-preview__info-header">
                 <p className="eyebrow" style={{ marginBottom: '0.8rem' }}>What we offer</p>
                 <h2 className="services-preview__title">
-                  Specialist care for young people
+                  {homepage.services_title}
                 </h2>
               </div>
               <Link to="/services" className="hero__pill-btn hero__pill-btn--dark services-preview__btn" id="home-services-link">
@@ -135,24 +147,29 @@ export default function Home() {
             </div>
 
             {/* Column 2 & 3: Service Cards */}
-            {services.map((s, idx) => (
-              <div className={`service-card service-card--simple fade-up stagger-${idx + 1}`} key={s.num || s.id || idx}>
-                {s.image && (
+            {services.map((s, idx) => {
+              const cardImg = s.image && s.image.trim() !== '' 
+                ? s.image 
+                : (s.title?.toLowerCase().includes('therapy') ? '/therapy.webp' : '/services_psychiatry_brain.webp')
+              return (
+                <div className={`service-card service-card--simple fade-up stagger-${idx + 1}`} key={s.id || s.num || idx}>
                   <div className="service-card__icon-container">
-                    <img src={s.image} alt={s.title} className="service-card__icon-img" />
+                    <img src={cardImg} alt={s.title} className="service-card__icon-img" />
                   </div>
-                )}
-                <h3 className="service-card__title">{s.title}</h3>
-                <Link 
-                  to="/services" 
-                  className="hero__pill-btn hero__pill-btn--dark hero__pill-btn--sm" 
-                  id={`service-link-${s.num || idx}`}
-                  aria-label={`Learn more about ${s.title}`}
-                >
-                  Learn more about {s.title}
-                </Link>
-              </div>
-            ))}
+                  <h3 className="service-card__title">{s.title}</h3>
+                  {s.content && <p style={{ fontSize: '0.88rem', color: 'var(--color-text-muted)', marginBottom: '1.25rem', lineHeight: 1.6 }}>{s.content}</p>}
+                  <Link 
+                    to="/services" 
+                    className="hero__pill-btn hero__pill-btn--dark hero__pill-btn--sm" 
+                    id={`service-link-${s.id || idx}`}
+                    aria-label={`Learn about ${s.title} services`}
+                    style={{ marginTop: 'auto' }}
+                  >
+                    Learn about {s.title}
+                  </Link>
+                </div>
+              )
+            })}
           </div>
         </div>
       </section>
@@ -163,17 +180,17 @@ export default function Home() {
           <div className="team-preview__header fade-up">
             <div>
               <p className="eyebrow" style={{ marginBottom: '0.8rem' }}>The people behind the clinic</p>
-              <h2 className="team-preview__title">Meet our team</h2>
+              <h2 className="team-preview__title">{homepage.team_title}</h2>
             </div>
             <Link to="/team" className="link-arrow" id="home-team-link">View full team</Link>
           </div>
 
           <div className="team-grid">
             {team.map((m, idx) => (
-              <Link to="/team" className={`team-card fade-up stagger-${idx + 1}`} key={m.name}>
+              <Link to="/team" className={`team-card fade-up stagger-${idx + 1}`} key={m.name} aria-label={`Read bio and credentials for ${m.name}`}>
                 <div className="team-card__photo">
                   <div className="team-card__photo-inner">
-                    <RevealImg src={m.photo} alt={m.name} />
+                    <RevealImg src={m.photo || (m.name?.includes('Rebecca') ? '/team_rebecca.webp' : '/team_joel.webp')} alt={m.name} />
                   </div>
                 </div>
                 <p className="team-card__name">{m.name}</p>
@@ -186,8 +203,8 @@ export default function Home() {
 
       {/* ── CTA Banner ── */}
       <ContactCtaBanner
-        title="Ready to take the first step?"
-        body="We know reaching out can feel like a big step. Our team is here to answer your questions and help you work out if we're the right fit — no pressure, no obligation."
+        title={cta.title}
+        body={cta.body}
       />
     </main>
   )

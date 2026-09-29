@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useSiteContent } from '../context/SiteContentContext'
 
 interface SEOProps {
   title?: string
@@ -7,24 +8,30 @@ interface SEOProps {
   canonicalUrl?: string
   ogImage?: string
   type?: string
+  robots?: string
 }
 
-const DEFAULT_TITLE = 'The Black Lantern Clinic | Specialist Youth Psychiatry & Therapy Brisbane'
-const DEFAULT_DESC = 'Specialist youth mental health clinic in Brisbane providing psychiatric assessment and evidence-based therapy for young people aged 12 to 25.'
-const DEFAULT_IMAGE = 'https://theblacklanternclinic.com/og-image.webp'
+const DEFAULT_TITLE = 'Psychiatrist Brisbane | Youth Mental Health | The Black Lantern Clinic'
+const DEFAULT_DESC = 'Private youth mental health clinic in Tarragindi, Brisbane, providing psychiatric assessment, treatment and therapeutic support for young people aged 12–25.'
 const SITE_NAME = 'The Black Lantern Clinic'
 
 export default function SEO({
-  title = DEFAULT_TITLE,
-  description = DEFAULT_DESC,
+  title,
+  description,
   keywords = 'youth mental health brisbane, child psychiatrist brisbane, adolescent psychiatry queensland, youth therapy brisbane, EMDR therapy brisbane, private youth clinic',
   canonicalUrl,
-  ogImage = DEFAULT_IMAGE,
+  ogImage,
   type = 'website',
+  robots = 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
 }: SEOProps) {
+  const { seo, general } = useSiteContent()
+  const activeTitle = title || seo.home_title || DEFAULT_TITLE
+  const activeDesc = description || seo.home_desc || DEFAULT_DESC
+  const activeOgImage = ogImage || seo.og_image || 'https://theblacklanternclinic.com/og-image.webp'
+
   useEffect(() => {
     // 1. Update Document Title
-    document.title = title
+    document.title = activeTitle
 
     // Helper to update or create meta tags
     const setMetaTag = (selector: string, attrName: string, attrVal: string, content: string) => {
@@ -48,35 +55,37 @@ export default function SEO({
       element.setAttribute('href', href)
     }
 
-    const currentUrl = canonicalUrl || window.location.href
+    // Enforce preferred non-www canonical URL
+    const rawUrl = canonicalUrl || (typeof window !== 'undefined' ? window.location.origin + window.location.pathname : 'https://theblacklanternclinic.com/')
+    const currentUrl = rawUrl.replace(/^https?:\/\/www\./i, 'https://')
 
     // 2. Standard & Local Meta Tags
-    setMetaTag('meta[name="description"]', 'name', 'description', description)
+    setMetaTag('meta[name="description"]', 'name', 'description', activeDesc)
     setMetaTag('meta[name="keywords"]', 'name', 'keywords', keywords)
     setMetaTag('meta[name="author"]', 'name', 'author', SITE_NAME)
-    setMetaTag('meta[name="robots"]', 'name', 'robots', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1')
+    setMetaTag('meta[name="robots"]', 'name', 'robots', robots)
     setMetaTag('meta[name="geo.region"]', 'name', 'geo.region', 'AU-QLD')
     setMetaTag('meta[name="geo.placename"]', 'name', 'geo.placename', 'Brisbane')
     setLinkTag('canonical', currentUrl)
 
     // 3. Open Graph (OG) Tags
-    setMetaTag('meta[property="og:title"]', 'property', 'og:title', title)
-    setMetaTag('meta[property="og:description"]', 'property', 'og:description', description)
+    setMetaTag('meta[property="og:title"]', 'property', 'og:title', activeTitle)
+    setMetaTag('meta[property="og:description"]', 'property', 'og:description', activeDesc)
     setMetaTag('meta[property="og:type"]', 'property', 'og:type', type)
     setMetaTag('meta[property="og:url"]', 'property', 'og:url', currentUrl)
-    setMetaTag('meta[property="og:image"]', 'property', 'og:image', ogImage)
+    setMetaTag('meta[property="og:image"]', 'property', 'og:image', activeOgImage)
     setMetaTag('meta[property="og:image:width"]', 'property', 'og:image:width', '1200')
     setMetaTag('meta[property="og:image:height"]', 'property', 'og:image:height', '630')
-    setMetaTag('meta[property="og:image:alt"]', 'property', 'og:image:alt', title)
+    setMetaTag('meta[property="og:image:alt"]', 'property', 'og:image:alt', activeTitle)
     setMetaTag('meta[property="og:site_name"]', 'property', 'og:site_name', SITE_NAME)
     setMetaTag('meta[property="og:locale"]', 'property', 'og:locale', 'en_AU')
 
     // 4. Twitter Card Tags
     setMetaTag('meta[name="twitter:card"]', 'name', 'twitter:card', 'summary_large_image')
-    setMetaTag('meta[name="twitter:title"]', 'name', 'twitter:title', title)
-    setMetaTag('meta[name="twitter:description"]', 'name', 'twitter:description', description)
-    setMetaTag('meta[name="twitter:image"]', 'name', 'twitter:image', ogImage)
-    setMetaTag('meta[name="twitter:image:alt"]', 'name', 'twitter:image:alt', title)
+    setMetaTag('meta[name="twitter:title"]', 'name', 'twitter:title', activeTitle)
+    setMetaTag('meta[name="twitter:description"]', 'name', 'twitter:description', activeDesc)
+    setMetaTag('meta[name="twitter:image"]', 'name', 'twitter:image', activeOgImage)
+    setMetaTag('meta[name="twitter:image:alt"]', 'name', 'twitter:image:alt', activeTitle)
 
     // 5. Schema.org JSON-LD Structured Data Graph
     const schemaId = 'schema-json-ld'
@@ -97,21 +106,23 @@ export default function SEO({
           'name': 'The Black Lantern Clinic',
           'url': 'https://theblacklanternclinic.com',
           'logo': 'https://theblacklanternclinic.com/black-lan.webp',
-          'image': ogImage,
-          'description': DEFAULT_DESC,
-          'telephone': '0418 542 638',
-          'email': 'admin@theblacklanternclinic.com',
+          'image': activeOgImage,
+          'description': activeDesc,
+          'telephone': general.phone || '0418 542 638',
+          'email': general.email || 'admin@theblacklanternclinic.com',
           'medicalSpecialty': ['Psychiatric', 'Psychotherapy', 'Pediatric'],
           'address': {
             '@type': 'PostalAddress',
-            'addressLocality': 'Brisbane',
+            'streetAddress': general.address ? general.address.split(',')[0].trim() : '195 Fingal Street',
+            'addressLocality': 'Tarragindi, Brisbane',
             'addressRegion': 'QLD',
+            'postalCode': '4121',
             'addressCountry': 'AU',
           },
           'geo': {
             '@type': 'GeoCoordinates',
-            'latitude': -27.4698,
-            'longitude': 153.0251,
+            'latitude': -27.5255,
+            'longitude': 153.0425,
           },
           'openingHoursSpecification': [
             {
@@ -144,8 +155,8 @@ export default function SEO({
           '@type': 'WebPage',
           '@id': `${currentUrl}#webpage`,
           'url': currentUrl,
-          'name': title,
-          'description': description,
+          'name': activeTitle,
+          'description': activeDesc,
           'isPartOf': {
             '@type': 'WebSite',
             '@id': 'https://theblacklanternclinic.com/#website',
@@ -157,7 +168,7 @@ export default function SEO({
     }
 
     scriptTag.textContent = JSON.stringify(jsonLdData)
-  }, [title, description, keywords, canonicalUrl, ogImage, type])
+  }, [activeTitle, activeDesc, activeOgImage, keywords, canonicalUrl, type, general, robots])
 
   return null
 }
